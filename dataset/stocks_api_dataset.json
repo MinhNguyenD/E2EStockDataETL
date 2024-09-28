@@ -1,0 +1,142 @@
+{
+	"name": "stocks_api_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HttpServer1",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"path": {
+					"value": "@dataset().path",
+					"type": "Expression"
+				},
+				"apiKey": "7rPnDmy0O4hVrxTEa31u0aqwYFnTyKmj"
+			}
+		},
+		"parameters": {
+			"path": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"symbol": {
+					"type": "string"
+				},
+				"price": {
+					"type": "integer"
+				},
+				"beta": {
+					"type": "number"
+				},
+				"volAvg": {
+					"type": "integer"
+				},
+				"mktCap": {
+					"type": "integer"
+				},
+				"lastDiv": {
+					"type": "integer"
+				},
+				"range": {
+					"type": "string"
+				},
+				"changes": {
+					"type": "number"
+				},
+				"companyName": {
+					"type": "string"
+				},
+				"currency": {
+					"type": "string"
+				},
+				"cik": {
+					"type": "string"
+				},
+				"isin": {
+					"type": "string"
+				},
+				"cusip": {
+					"type": "string"
+				},
+				"exchange": {
+					"type": "string"
+				},
+				"exchangeShortName": {
+					"type": "string"
+				},
+				"industry": {
+					"type": "string"
+				},
+				"website": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"ceo": {
+					"type": "string"
+				},
+				"sector": {
+					"type": "string"
+				},
+				"country": {
+					"type": "string"
+				},
+				"fullTimeEmployees": {
+					"type": "string"
+				},
+				"phone": {
+					"type": "string"
+				},
+				"address": {
+					"type": "string"
+				},
+				"city": {
+					"type": "string"
+				},
+				"state": {
+					"type": "string"
+				},
+				"zip": {
+					"type": "string"
+				},
+				"dcfDiff": {
+					"type": "number"
+				},
+				"dcf": {
+					"type": "number"
+				},
+				"image": {
+					"type": "string"
+				},
+				"ipoDate": {
+					"type": "string"
+				},
+				"defaultImage": {
+					"type": "boolean"
+				},
+				"isEtf": {
+					"type": "boolean"
+				},
+				"isActivelyTrading": {
+					"type": "boolean"
+				},
+				"isAdr": {
+					"type": "boolean"
+				},
+				"isFund": {
+					"type": "boolean"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

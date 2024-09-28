@@ -1,0 +1,9 @@
+{
+	"name": "minhdataingestfactory",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6c767b1e-154d-4902-a155-83caf2a0c168",
+		"tenantId": "60b81999-0b7f-412d-92a3-e17d8ae9e3e0"
+	}
+}
