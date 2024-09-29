@@ -1,0 +1,3130 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "minhdataingestfactory"
+		},
+		"HttpServer1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'HttpServer1'"
+		},
+		"RestService1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'RestService1'"
+		},
+		"datalakestorage_link_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'datalakestorage_link'"
+		},
+		"storagesource_link_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'storagesource_link'"
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}"
+		},
+		"HttpServer1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "datafactadmin"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}"
+		},
+		"RestService1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "datafactadmin"
+		},
+		"datalakestorage_link_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dataengineerlakestorage.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/HttpServer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"path": {
+						"type": "string"
+					},
+					"apiKey": {
+						"type": "string",
+						"defaultValue": "7rPnDmy0O4hVrxTEa31u0aqwYFnTyKmj"
+					}
+				},
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('HttpServer1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('HttpServer1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('HttpServer1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"path": {
+						"type": "string"
+					},
+					"apiKey": {
+						"type": "string",
+						"defaultValue": "7rPnDmy0O4hVrxTEa31u0aqwYFnTyKmj"
+					}
+				},
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('RestService1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('RestService1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/datalakestorage_link')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('datalakestorage_link_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('datalakestorage_link_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storagesource_link')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('storagesource_link_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/processed_datalake_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalakestorage_link",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folderPath": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().folderPath",
+							"type": "Expression"
+						},
+						"fileSystem": "processed"
+					},
+					"columnDelimiter": ",",
+					"encodingName": "UTF-8",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datalakestorage_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/raw_datalake_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalakestorage_link",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folderPath": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().folderPath",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"encodingName": "UTF-8",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "symbol",
+						"type": "String"
+					},
+					{
+						"name": "price",
+						"type": "String"
+					},
+					{
+						"name": "beta",
+						"type": "String"
+					},
+					{
+						"name": "volAvg",
+						"type": "String"
+					},
+					{
+						"name": "mktCap",
+						"type": "String"
+					},
+					{
+						"name": "lastDiv",
+						"type": "String"
+					},
+					{
+						"name": "range",
+						"type": "String"
+					},
+					{
+						"name": "changes",
+						"type": "String"
+					},
+					{
+						"name": "companyName",
+						"type": "String"
+					},
+					{
+						"name": "currency",
+						"type": "String"
+					},
+					{
+						"name": "cik",
+						"type": "String"
+					},
+					{
+						"name": "isin",
+						"type": "String"
+					},
+					{
+						"name": "cusip",
+						"type": "String"
+					},
+					{
+						"name": "exchange",
+						"type": "String"
+					},
+					{
+						"name": "exchangeShortName",
+						"type": "String"
+					},
+					{
+						"name": "industry",
+						"type": "String"
+					},
+					{
+						"name": "website",
+						"type": "String"
+					},
+					{
+						"name": "description",
+						"type": "String"
+					},
+					{
+						"name": "ceo",
+						"type": "String"
+					},
+					{
+						"name": "sector",
+						"type": "String"
+					},
+					{
+						"name": "country",
+						"type": "String"
+					},
+					{
+						"name": "fullTimeEmployees",
+						"type": "String"
+					},
+					{
+						"name": "phone",
+						"type": "String"
+					},
+					{
+						"name": "address",
+						"type": "String"
+					},
+					{
+						"name": "city",
+						"type": "String"
+					},
+					{
+						"name": "state",
+						"type": "String"
+					},
+					{
+						"name": "zip",
+						"type": "String"
+					},
+					{
+						"name": "dcfDiff",
+						"type": "String"
+					},
+					{
+						"name": "dcf",
+						"type": "String"
+					},
+					{
+						"name": "image",
+						"type": "String"
+					},
+					{
+						"name": "ipoDate",
+						"type": "String"
+					},
+					{
+						"name": "defaultImage",
+						"type": "String"
+					},
+					{
+						"name": "isEtf",
+						"type": "String"
+					},
+					{
+						"name": "isActivelyTrading",
+						"type": "String"
+					},
+					{
+						"name": "isAdr",
+						"type": "String"
+					},
+					{
+						"name": "isFund",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datalakestorage_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/stage_datalake_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalakestorage_link",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folderPath": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().folderPath",
+							"type": "Expression"
+						},
+						"fileSystem": "stage"
+					},
+					"columnDelimiter": ",",
+					"encodingName": "UTF-8",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datalakestorage_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/stocks_api_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HttpServer1",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"path": {
+							"value": "@dataset().path",
+							"type": "Expression"
+						},
+						"apiKey": "7rPnDmy0O4hVrxTEa31u0aqwYFnTyKmj"
+					}
+				},
+				"parameters": {
+					"path": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"symbol": {
+							"type": "string"
+						},
+						"price": {
+							"type": "integer"
+						},
+						"beta": {
+							"type": "number"
+						},
+						"volAvg": {
+							"type": "integer"
+						},
+						"mktCap": {
+							"type": "integer"
+						},
+						"lastDiv": {
+							"type": "integer"
+						},
+						"range": {
+							"type": "string"
+						},
+						"changes": {
+							"type": "number"
+						},
+						"companyName": {
+							"type": "string"
+						},
+						"currency": {
+							"type": "string"
+						},
+						"cik": {
+							"type": "string"
+						},
+						"isin": {
+							"type": "string"
+						},
+						"cusip": {
+							"type": "string"
+						},
+						"exchange": {
+							"type": "string"
+						},
+						"exchangeShortName": {
+							"type": "string"
+						},
+						"industry": {
+							"type": "string"
+						},
+						"website": {
+							"type": "string"
+						},
+						"description": {
+							"type": "string"
+						},
+						"ceo": {
+							"type": "string"
+						},
+						"sector": {
+							"type": "string"
+						},
+						"country": {
+							"type": "string"
+						},
+						"fullTimeEmployees": {
+							"type": "string"
+						},
+						"phone": {
+							"type": "string"
+						},
+						"address": {
+							"type": "string"
+						},
+						"city": {
+							"type": "string"
+						},
+						"state": {
+							"type": "string"
+						},
+						"zip": {
+							"type": "string"
+						},
+						"dcfDiff": {
+							"type": "number"
+						},
+						"dcf": {
+							"type": "number"
+						},
+						"image": {
+							"type": "string"
+						},
+						"ipoDate": {
+							"type": "string"
+						},
+						"defaultImage": {
+							"type": "boolean"
+						},
+						"isEtf": {
+							"type": "boolean"
+						},
+						"isActivelyTrading": {
+							"type": "boolean"
+						},
+						"isAdr": {
+							"type": "boolean"
+						},
+						"isFund": {
+							"type": "boolean"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/HttpServer1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "storagesource_link",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "stocksource"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Index",
+						"type": "String"
+					},
+					{
+						"name": "Date",
+						"type": "String"
+					},
+					{
+						"name": "Open",
+						"type": "String"
+					},
+					{
+						"name": "High",
+						"type": "String"
+					},
+					{
+						"name": "Low",
+						"type": "String"
+					},
+					{
+						"name": "Close",
+						"type": "String"
+					},
+					{
+						"name": "Adj Close",
+						"type": "String"
+					},
+					{
+						"name": "Volume",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/storagesource_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ingestion_pipeline_storage')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get File Metadata",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "storage_dataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "Loop through each file",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Get File Metadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get File Metadata').output.childItems",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 1,
+							"activities": [
+								{
+									"name": "Switch File Name",
+									"type": "Switch",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"on": {
+											"value": "@replace(item().name, '.','')",
+											"type": "Expression"
+										},
+										"cases": [
+											{
+												"value": "indexDatacsv",
+												"activities": [
+													{
+														"name": "Copy data",
+														"type": "Copy",
+														"dependsOn": [],
+														"policy": {
+															"timeout": "0.12:00:00",
+															"retry": 0,
+															"retryIntervalInSeconds": 30,
+															"secureOutput": false,
+															"secureInput": false
+														},
+														"userProperties": [],
+														"typeProperties": {
+															"source": {
+																"type": "DelimitedTextSource",
+																"storeSettings": {
+																	"type": "AzureBlobStorageReadSettings",
+																	"recursive": true,
+																	"wildcardFileName": {
+																		"value": "@item().name",
+																		"type": "Expression"
+																	},
+																	"enablePartitionDiscovery": false
+																},
+																"formatSettings": {
+																	"type": "DelimitedTextReadSettings"
+																}
+															},
+															"sink": {
+																"type": "DelimitedTextSink",
+																"storeSettings": {
+																	"type": "AzureBlobFSWriteSettings",
+																	"copyBehavior": "FlattenHierarchy"
+																},
+																"formatSettings": {
+																	"type": "DelimitedTextWriteSettings",
+																	"quoteAllText": true,
+																	"fileExtension": ".csv"
+																}
+															},
+															"enableStaging": false,
+															"translator": {
+																"type": "TabularTranslator",
+																"typeConversion": true,
+																"typeConversionSettings": {
+																	"allowDataTruncation": true,
+																	"treatBooleanAsNumber": false
+																}
+															}
+														},
+														"inputs": [
+															{
+																"referenceName": "storage_dataset",
+																"type": "DatasetReference",
+																"parameters": {}
+															}
+														],
+														"outputs": [
+															{
+																"referenceName": "raw_datalake_dataset",
+																"type": "DatasetReference",
+																"parameters": {
+																	"folderPath": {
+																		"value": "@replace(item().name,'.csv', '')",
+																		"type": "Expression"
+																	}
+																}
+															}
+														]
+													}
+												]
+											},
+											{
+												"value": "indexInfocsv",
+												"activities": [
+													{
+														"name": "Copy data2",
+														"type": "Copy",
+														"dependsOn": [],
+														"policy": {
+															"timeout": "0.12:00:00",
+															"retry": 0,
+															"retryIntervalInSeconds": 30,
+															"secureOutput": false,
+															"secureInput": false
+														},
+														"userProperties": [],
+														"typeProperties": {
+															"source": {
+																"type": "DelimitedTextSource",
+																"storeSettings": {
+																	"type": "AzureBlobStorageReadSettings",
+																	"recursive": true,
+																	"wildcardFileName": "indexInfo.csv",
+																	"enablePartitionDiscovery": false
+																},
+																"formatSettings": {
+																	"type": "DelimitedTextReadSettings"
+																}
+															},
+															"sink": {
+																"type": "DelimitedTextSink",
+																"storeSettings": {
+																	"type": "AzureBlobFSWriteSettings",
+																	"copyBehavior": "FlattenHierarchy"
+																},
+																"formatSettings": {
+																	"type": "DelimitedTextWriteSettings",
+																	"quoteAllText": true,
+																	"fileExtension": ".csv"
+																}
+															},
+															"enableStaging": false,
+															"translator": {
+																"type": "TabularTranslator",
+																"typeConversion": true,
+																"typeConversionSettings": {
+																	"allowDataTruncation": true,
+																	"treatBooleanAsNumber": false
+																}
+															}
+														},
+														"inputs": [
+															{
+																"referenceName": "storage_dataset",
+																"type": "DatasetReference",
+																"parameters": {}
+															}
+														],
+														"outputs": [
+															{
+																"referenceName": "raw_datalake_dataset",
+																"type": "DatasetReference",
+																"parameters": {
+																	"folderPath": "@replace(item().name,'.csv', '')"
+																}
+															}
+														]
+													}
+												]
+											},
+											{
+												"value": "indexProcessedcsv",
+												"activities": [
+													{
+														"name": "Copy data3",
+														"type": "Copy",
+														"dependsOn": [],
+														"policy": {
+															"timeout": "0.12:00:00",
+															"retry": 0,
+															"retryIntervalInSeconds": 30,
+															"secureOutput": false,
+															"secureInput": false
+														},
+														"userProperties": [],
+														"typeProperties": {
+															"source": {
+																"type": "DelimitedTextSource",
+																"storeSettings": {
+																	"type": "AzureBlobStorageReadSettings",
+																	"recursive": true,
+																	"wildcardFileName": "indexProcessed.csv",
+																	"enablePartitionDiscovery": false
+																},
+																"formatSettings": {
+																	"type": "DelimitedTextReadSettings"
+																}
+															},
+															"sink": {
+																"type": "DelimitedTextSink",
+																"storeSettings": {
+																	"type": "AzureBlobFSWriteSettings",
+																	"copyBehavior": "FlattenHierarchy"
+																},
+																"formatSettings": {
+																	"type": "DelimitedTextWriteSettings",
+																	"quoteAllText": true,
+																	"fileExtension": ".csv"
+																}
+															},
+															"enableStaging": false,
+															"translator": {
+																"type": "TabularTranslator",
+																"typeConversion": true,
+																"typeConversionSettings": {
+																	"allowDataTruncation": true,
+																	"treatBooleanAsNumber": false
+																}
+															}
+														},
+														"inputs": [
+															{
+																"referenceName": "storage_dataset",
+																"type": "DatasetReference",
+																"parameters": {}
+															}
+														],
+														"outputs": [
+															{
+																"referenceName": "raw_datalake_dataset",
+																"type": "DatasetReference",
+																"parameters": {
+																	"folderPath": "@replace(item().name,'.csv', '')"
+																}
+															}
+														]
+													}
+												]
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-09-28T03:50:48Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/storage_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/raw_datalake_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cleansing_ingestion_dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "stockinfo"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "stage_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          symbol as string,",
+						"          price as integer,",
+						"          beta as string,",
+						"          volAvg as string,",
+						"          mktCap as string,",
+						"          lastDiv as string,",
+						"          range as string,",
+						"          changes as string,",
+						"          companyName as string,",
+						"          currency as string,",
+						"          cik as string,",
+						"          isin as string,",
+						"          cusip as string,",
+						"          exchange as string,",
+						"          exchangeShortName as string,",
+						"          industry as string,",
+						"          website as string,",
+						"          description as string,",
+						"          ceo as string,",
+						"          sector as string,",
+						"          country as string,",
+						"          fullTimeEmployees as string,",
+						"          phone as string,",
+						"          address as string,",
+						"          city as string,",
+						"          state as string,",
+						"          zip as string,",
+						"          dcfDiff as string,",
+						"          dcf as string,",
+						"          image as string,",
+						"          ipoDate as string,",
+						"          defaultImage as string,",
+						"          isEtf as string,",
+						"          isActivelyTrading as string,",
+						"          isAdr as string,",
+						"          isFund as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> stockinfo",
+						"stockinfo select(mapColumn(",
+						"          symbol,",
+						"          price,",
+						"          volAvg,",
+						"          mktCap,",
+						"          lastDiv,",
+						"          range,",
+						"          changes,",
+						"          companyName,",
+						"          currency,",
+						"          exchange,",
+						"          exchangeShortName,",
+						"          industry,",
+						"          description,",
+						"          ceo,",
+						"          sector,",
+						"          address",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/raw_datalake_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/stage_datalake_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ingestion_pipeline_api')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy profile to raw zone",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "FlattenHierarchy"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['symbol']"
+										},
+										"sink": {
+											"name": "symbol"
+										}
+									},
+									{
+										"source": {
+											"path": "$['price']"
+										},
+										"sink": {
+											"name": "price"
+										}
+									},
+									{
+										"source": {
+											"path": "$['beta']"
+										},
+										"sink": {
+											"name": "beta"
+										}
+									},
+									{
+										"source": {
+											"path": "$['volAvg']"
+										},
+										"sink": {
+											"name": "volAvg"
+										}
+									},
+									{
+										"source": {
+											"path": "$['mktCap']"
+										},
+										"sink": {
+											"name": "mktCap"
+										}
+									},
+									{
+										"source": {
+											"path": "$['lastDiv']"
+										},
+										"sink": {
+											"name": "lastDiv"
+										}
+									},
+									{
+										"source": {
+											"path": "$['range']"
+										},
+										"sink": {
+											"name": "range"
+										}
+									},
+									{
+										"source": {
+											"path": "$['changes']"
+										},
+										"sink": {
+											"name": "changes"
+										}
+									},
+									{
+										"source": {
+											"path": "$['companyName']"
+										},
+										"sink": {
+											"name": "companyName"
+										}
+									},
+									{
+										"source": {
+											"path": "$['currency']"
+										},
+										"sink": {
+											"name": "currency"
+										}
+									},
+									{
+										"source": {
+											"path": "$['cik']"
+										},
+										"sink": {
+											"name": "cik"
+										}
+									},
+									{
+										"source": {
+											"path": "$['isin']"
+										},
+										"sink": {
+											"name": "isin"
+										}
+									},
+									{
+										"source": {
+											"path": "$['cusip']"
+										},
+										"sink": {
+											"name": "cusip"
+										}
+									},
+									{
+										"source": {
+											"path": "$['exchange']"
+										},
+										"sink": {
+											"name": "exchange"
+										}
+									},
+									{
+										"source": {
+											"path": "$['exchangeShortName']"
+										},
+										"sink": {
+											"name": "exchangeShortName"
+										}
+									},
+									{
+										"source": {
+											"path": "$['industry']"
+										},
+										"sink": {
+											"name": "industry"
+										}
+									},
+									{
+										"source": {
+											"path": "$['website']"
+										},
+										"sink": {
+											"name": "website"
+										}
+									},
+									{
+										"source": {
+											"path": "$['description']"
+										},
+										"sink": {
+											"name": "description"
+										}
+									},
+									{
+										"source": {
+											"path": "$['ceo']"
+										},
+										"sink": {
+											"name": "ceo"
+										}
+									},
+									{
+										"source": {
+											"path": "$['sector']"
+										},
+										"sink": {
+											"name": "sector"
+										}
+									},
+									{
+										"source": {
+											"path": "$['country']"
+										},
+										"sink": {
+											"name": "country"
+										}
+									},
+									{
+										"source": {
+											"path": "$['fullTimeEmployees']"
+										},
+										"sink": {
+											"name": "fullTimeEmployees"
+										}
+									},
+									{
+										"source": {
+											"path": "$['phone']"
+										},
+										"sink": {
+											"name": "phone"
+										}
+									},
+									{
+										"source": {
+											"path": "$['address']"
+										},
+										"sink": {
+											"name": "address"
+										}
+									},
+									{
+										"source": {
+											"path": "$['city']"
+										},
+										"sink": {
+											"name": "city"
+										}
+									},
+									{
+										"source": {
+											"path": "$['state']"
+										},
+										"sink": {
+											"name": "state"
+										}
+									},
+									{
+										"source": {
+											"path": "$['zip']"
+										},
+										"sink": {
+											"name": "zip"
+										}
+									},
+									{
+										"source": {
+											"path": "$['dcfDiff']"
+										},
+										"sink": {
+											"name": "dcfDiff"
+										}
+									},
+									{
+										"source": {
+											"path": "$['dcf']"
+										},
+										"sink": {
+											"name": "dcf"
+										}
+									},
+									{
+										"source": {
+											"path": "$['image']"
+										},
+										"sink": {
+											"name": "image"
+										}
+									},
+									{
+										"source": {
+											"path": "$['ipoDate']"
+										},
+										"sink": {
+											"name": "ipoDate"
+										}
+									},
+									{
+										"source": {
+											"path": "$['defaultImage']"
+										},
+										"sink": {
+											"name": "defaultImage"
+										}
+									},
+									{
+										"source": {
+											"path": "$['isEtf']"
+										},
+										"sink": {
+											"name": "isEtf"
+										}
+									},
+									{
+										"source": {
+											"path": "$['isActivelyTrading']"
+										},
+										"sink": {
+											"name": "isActivelyTrading"
+										}
+									},
+									{
+										"source": {
+											"path": "$['isAdr']"
+										},
+										"sink": {
+											"name": "isAdr"
+										}
+									},
+									{
+										"source": {
+											"path": "$['isFund']"
+										},
+										"sink": {
+											"name": "isFund"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "stocks_api_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"path": "/profile/msft"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"folderPath": "@{pipeline().parameters.apiFolderPath}/profile"
+								}
+							}
+						]
+					},
+					{
+						"name": "Copy quote",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "FlattenHierarchy"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['symbol']"
+										},
+										"sink": {
+											"name": "symbol"
+										}
+									},
+									{
+										"source": {
+											"path": "$['name']"
+										},
+										"sink": {
+											"name": "name"
+										}
+									},
+									{
+										"source": {
+											"path": "$['price']"
+										},
+										"sink": {
+											"name": "price"
+										}
+									},
+									{
+										"source": {
+											"path": "$['changesPercentage']"
+										},
+										"sink": {
+											"name": "changesPercentage"
+										}
+									},
+									{
+										"source": {
+											"path": "$['change']"
+										},
+										"sink": {
+											"name": "change"
+										}
+									},
+									{
+										"source": {
+											"path": "$['dayLow']"
+										},
+										"sink": {
+											"name": "dayLow"
+										}
+									},
+									{
+										"source": {
+											"path": "$['dayHigh']"
+										},
+										"sink": {
+											"name": "dayHigh"
+										}
+									},
+									{
+										"source": {
+											"path": "$['yearHigh']"
+										},
+										"sink": {
+											"name": "yearHigh"
+										}
+									},
+									{
+										"source": {
+											"path": "$['yearLow']"
+										},
+										"sink": {
+											"name": "yearLow"
+										}
+									},
+									{
+										"source": {
+											"path": "$['marketCap']"
+										},
+										"sink": {
+											"name": "marketCap"
+										}
+									},
+									{
+										"source": {
+											"path": "$['priceAvg50']"
+										},
+										"sink": {
+											"name": "priceAvg50"
+										}
+									},
+									{
+										"source": {
+											"path": "$['priceAvg200']"
+										},
+										"sink": {
+											"name": "priceAvg200"
+										}
+									},
+									{
+										"source": {
+											"path": "$['exchange']"
+										},
+										"sink": {
+											"name": "exchange"
+										}
+									},
+									{
+										"source": {
+											"path": "$['volume']"
+										},
+										"sink": {
+											"name": "volume"
+										}
+									},
+									{
+										"source": {
+											"path": "$['avgVolume']"
+										},
+										"sink": {
+											"name": "avgVolume"
+										}
+									},
+									{
+										"source": {
+											"path": "$['open']"
+										},
+										"sink": {
+											"name": "open"
+										}
+									},
+									{
+										"source": {
+											"path": "$['previousClose']"
+										},
+										"sink": {
+											"name": "previousClose"
+										}
+									},
+									{
+										"source": {
+											"path": "$['eps']"
+										},
+										"sink": {
+											"name": "eps"
+										}
+									},
+									{
+										"source": {
+											"path": "$['pe']"
+										},
+										"sink": {
+											"name": "pe"
+										}
+									},
+									{
+										"source": {
+											"path": "$['earningsAnnouncement']"
+										},
+										"sink": {
+											"name": "earningsAnnouncement"
+										}
+									},
+									{
+										"source": {
+											"path": "$['sharesOutstanding']"
+										},
+										"sink": {
+											"name": "sharesOutstanding"
+										}
+									},
+									{
+										"source": {
+											"path": "$['timestamp']"
+										},
+										"sink": {
+											"name": "timestamp"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "stocks_api_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"path": "/quote/msft"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"folderPath": {
+										"value": "@{pipeline().parameters.apiFolderPath}/quote",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "Copy income statement",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "FlattenHierarchy"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['symbol']"
+										},
+										"sink": {
+											"name": "symbol"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['date']"
+										},
+										"sink": {
+											"name": "date"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Revenue']"
+										},
+										"sink": {
+											"name": "Revenue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Revenue Growth']"
+										},
+										"sink": {
+											"name": "Revenue Growth"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Cost of Revenue']"
+										},
+										"sink": {
+											"name": "Cost of Revenue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Gross Profit']"
+										},
+										"sink": {
+											"name": "Gross Profit"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['R&D Expenses']"
+										},
+										"sink": {
+											"name": "R&D Expenses"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['SG&A Expense']"
+										},
+										"sink": {
+											"name": "SG&A Expense"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Operating Expenses']"
+										},
+										"sink": {
+											"name": "Operating Expenses"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Operating Income']"
+										},
+										"sink": {
+											"name": "Operating Income"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Interest Expense']"
+										},
+										"sink": {
+											"name": "Interest Expense"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Earnings before Tax']"
+										},
+										"sink": {
+											"name": "Earnings before Tax"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Income Tax Expense']"
+										},
+										"sink": {
+											"name": "Income Tax Expense"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Net Income - Non-Controlling int']"
+										},
+										"sink": {
+											"name": "Net Income - Non-Controlling int"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Net Income - Discontinued ops']"
+										},
+										"sink": {
+											"name": "Net Income - Discontinued ops"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Net Income']"
+										},
+										"sink": {
+											"name": "Net Income"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Preferred Dividends']"
+										},
+										"sink": {
+											"name": "Preferred Dividends"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Net Income Com']"
+										},
+										"sink": {
+											"name": "Net Income Com"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['EPS']"
+										},
+										"sink": {
+											"name": "EPS"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['EPS Diluted']"
+										},
+										"sink": {
+											"name": "EPS Diluted"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Weighted Average Shs Out']"
+										},
+										"sink": {
+											"name": "Weighted Average Shs Out"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Weighted Average Shs Out (Dil)']"
+										},
+										"sink": {
+											"name": "Weighted Average Shs Out (Dil)"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Dividend per Share']"
+										},
+										"sink": {
+											"name": "Dividend per Share"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Gross Margin']"
+										},
+										"sink": {
+											"name": "Gross Margin"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['EBITDA Margin']"
+										},
+										"sink": {
+											"name": "EBITDA Margin"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['EBIT Margin']"
+										},
+										"sink": {
+											"name": "EBIT Margin"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Profit Margin']"
+										},
+										"sink": {
+											"name": "Profit Margin"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Free Cash Flow margin']"
+										},
+										"sink": {
+											"name": "Free Cash Flow margin"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['EBITDA']"
+										},
+										"sink": {
+											"name": "EBITDA"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['EBIT']"
+										},
+										"sink": {
+											"name": "EBIT"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Consolidated Income']"
+										},
+										"sink": {
+											"name": "Consolidated Income"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Earnings Before Tax Margin']"
+										},
+										"sink": {
+											"name": "Earnings Before Tax Margin"
+										}
+									},
+									{
+										"source": {
+											"path": "$['financials'][0]['Net Profit Margin']"
+										},
+										"sink": {
+											"name": "Net Profit Margin"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "stocks_api_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"path": "financials/income-statement/msft"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"folderPath": {
+										"value": "@{pipeline().parameters.apiFolderPath}/incomestatement",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "Copy key metrics",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "FlattenHierarchy"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['symbol']"
+										},
+										"sink": {
+											"name": "symbol"
+										}
+									},
+									{
+										"source": {
+											"path": "$['date']"
+										},
+										"sink": {
+											"name": "date"
+										}
+									},
+									{
+										"source": {
+											"path": "$['calendarYear']"
+										},
+										"sink": {
+											"name": "calendarYear"
+										}
+									},
+									{
+										"source": {
+											"path": "$['period']"
+										},
+										"sink": {
+											"name": "period"
+										}
+									},
+									{
+										"source": {
+											"path": "$['revenuePerShare']"
+										},
+										"sink": {
+											"name": "revenuePerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['netIncomePerShare']"
+										},
+										"sink": {
+											"name": "netIncomePerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['operatingCashFlowPerShare']"
+										},
+										"sink": {
+											"name": "operatingCashFlowPerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['freeCashFlowPerShare']"
+										},
+										"sink": {
+											"name": "freeCashFlowPerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['cashPerShare']"
+										},
+										"sink": {
+											"name": "cashPerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['bookValuePerShare']"
+										},
+										"sink": {
+											"name": "bookValuePerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tangibleBookValuePerShare']"
+										},
+										"sink": {
+											"name": "tangibleBookValuePerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['shareholdersEquityPerShare']"
+										},
+										"sink": {
+											"name": "shareholdersEquityPerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['interestDebtPerShare']"
+										},
+										"sink": {
+											"name": "interestDebtPerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['marketCap']"
+										},
+										"sink": {
+											"name": "marketCap"
+										}
+									},
+									{
+										"source": {
+											"path": "$['enterpriseValue']"
+										},
+										"sink": {
+											"name": "enterpriseValue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['peRatio']"
+										},
+										"sink": {
+											"name": "peRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['priceToSalesRatio']"
+										},
+										"sink": {
+											"name": "priceToSalesRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['pocfratio']"
+										},
+										"sink": {
+											"name": "pocfratio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['pfcfRatio']"
+										},
+										"sink": {
+											"name": "pfcfRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['pbRatio']"
+										},
+										"sink": {
+											"name": "pbRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['ptbRatio']"
+										},
+										"sink": {
+											"name": "ptbRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['evToSales']"
+										},
+										"sink": {
+											"name": "evToSales"
+										}
+									},
+									{
+										"source": {
+											"path": "$['enterpriseValueOverEBITDA']"
+										},
+										"sink": {
+											"name": "enterpriseValueOverEBITDA"
+										}
+									},
+									{
+										"source": {
+											"path": "$['evToOperatingCashFlow']"
+										},
+										"sink": {
+											"name": "evToOperatingCashFlow"
+										}
+									},
+									{
+										"source": {
+											"path": "$['evToFreeCashFlow']"
+										},
+										"sink": {
+											"name": "evToFreeCashFlow"
+										}
+									},
+									{
+										"source": {
+											"path": "$['earningsYield']"
+										},
+										"sink": {
+											"name": "earningsYield"
+										}
+									},
+									{
+										"source": {
+											"path": "$['freeCashFlowYield']"
+										},
+										"sink": {
+											"name": "freeCashFlowYield"
+										}
+									},
+									{
+										"source": {
+											"path": "$['debtToEquity']"
+										},
+										"sink": {
+											"name": "debtToEquity"
+										}
+									},
+									{
+										"source": {
+											"path": "$['debtToAssets']"
+										},
+										"sink": {
+											"name": "debtToAssets"
+										}
+									},
+									{
+										"source": {
+											"path": "$['netDebtToEBITDA']"
+										},
+										"sink": {
+											"name": "netDebtToEBITDA"
+										}
+									},
+									{
+										"source": {
+											"path": "$['currentRatio']"
+										},
+										"sink": {
+											"name": "currentRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['interestCoverage']"
+										},
+										"sink": {
+											"name": "interestCoverage"
+										}
+									},
+									{
+										"source": {
+											"path": "$['incomeQuality']"
+										},
+										"sink": {
+											"name": "incomeQuality"
+										}
+									},
+									{
+										"source": {
+											"path": "$['dividendYield']"
+										},
+										"sink": {
+											"name": "dividendYield"
+										}
+									},
+									{
+										"source": {
+											"path": "$['payoutRatio']"
+										},
+										"sink": {
+											"name": "payoutRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['salesGeneralAndAdministrativeToRevenue']"
+										},
+										"sink": {
+											"name": "salesGeneralAndAdministrativeToRevenue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['researchAndDdevelopementToRevenue']"
+										},
+										"sink": {
+											"name": "researchAndDdevelopementToRevenue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['intangiblesToTotalAssets']"
+										},
+										"sink": {
+											"name": "intangiblesToTotalAssets"
+										}
+									},
+									{
+										"source": {
+											"path": "$['capexToOperatingCashFlow']"
+										},
+										"sink": {
+											"name": "capexToOperatingCashFlow"
+										}
+									},
+									{
+										"source": {
+											"path": "$['capexToRevenue']"
+										},
+										"sink": {
+											"name": "capexToRevenue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['capexToDepreciation']"
+										},
+										"sink": {
+											"name": "capexToDepreciation"
+										}
+									},
+									{
+										"source": {
+											"path": "$['stockBasedCompensationToRevenue']"
+										},
+										"sink": {
+											"name": "stockBasedCompensationToRevenue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['grahamNumber']"
+										},
+										"sink": {
+											"name": "grahamNumber"
+										}
+									},
+									{
+										"source": {
+											"path": "$['roic']"
+										},
+										"sink": {
+											"name": "roic"
+										}
+									},
+									{
+										"source": {
+											"path": "$['returnOnTangibleAssets']"
+										},
+										"sink": {
+											"name": "returnOnTangibleAssets"
+										}
+									},
+									{
+										"source": {
+											"path": "$['grahamNetNet']"
+										},
+										"sink": {
+											"name": "grahamNetNet"
+										}
+									},
+									{
+										"source": {
+											"path": "$['workingCapital']"
+										},
+										"sink": {
+											"name": "workingCapital"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tangibleAssetValue']"
+										},
+										"sink": {
+											"name": "tangibleAssetValue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['netCurrentAssetValue']"
+										},
+										"sink": {
+											"name": "netCurrentAssetValue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['investedCapital']"
+										},
+										"sink": {
+											"name": "investedCapital"
+										}
+									},
+									{
+										"source": {
+											"path": "$['averageReceivables']"
+										},
+										"sink": {
+											"name": "averageReceivables"
+										}
+									},
+									{
+										"source": {
+											"path": "$['averagePayables']"
+										},
+										"sink": {
+											"name": "averagePayables"
+										}
+									},
+									{
+										"source": {
+											"path": "$['averageInventory']"
+										},
+										"sink": {
+											"name": "averageInventory"
+										}
+									},
+									{
+										"source": {
+											"path": "$['daysSalesOutstanding']"
+										},
+										"sink": {
+											"name": "daysSalesOutstanding"
+										}
+									},
+									{
+										"source": {
+											"path": "$['daysPayablesOutstanding']"
+										},
+										"sink": {
+											"name": "daysPayablesOutstanding"
+										}
+									},
+									{
+										"source": {
+											"path": "$['daysOfInventoryOnHand']"
+										},
+										"sink": {
+											"name": "daysOfInventoryOnHand"
+										}
+									},
+									{
+										"source": {
+											"path": "$['receivablesTurnover']"
+										},
+										"sink": {
+											"name": "receivablesTurnover"
+										}
+									},
+									{
+										"source": {
+											"path": "$['payablesTurnover']"
+										},
+										"sink": {
+											"name": "payablesTurnover"
+										}
+									},
+									{
+										"source": {
+											"path": "$['inventoryTurnover']"
+										},
+										"sink": {
+											"name": "inventoryTurnover"
+										}
+									},
+									{
+										"source": {
+											"path": "$['roe']"
+										},
+										"sink": {
+											"name": "roe"
+										}
+									},
+									{
+										"source": {
+											"path": "$['capexPerShare']"
+										},
+										"sink": {
+											"name": "capexPerShare"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "stocks_api_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"path": "key-metrics/msft"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"folderPath": {
+										"value": "@{pipeline().parameters.apiFolderPath}/keymetrics",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "cleansing_ingestion_dataflow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Copy profile to raw zone",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "cleansing_ingestion_dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"stockinfo": {
+										"folderPath": "@{pipeline().parameters.apiFolderPath}/profile"
+									},
+									"sink1": {
+										"folderPath": "@{pipeline().parameters.apiFolderPath}/profile"
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Copy historical price",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "FlattenHierarchy"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['symbol']"
+										},
+										"sink": {
+											"name": "symbol"
+										}
+									},
+									{
+										"source": {
+											"path": "$['date']"
+										},
+										"sink": {
+											"name": "date"
+										}
+									},
+									{
+										"source": {
+											"path": "$['calendarYear']"
+										},
+										"sink": {
+											"name": "calendarYear"
+										}
+									},
+									{
+										"source": {
+											"path": "$['period']"
+										},
+										"sink": {
+											"name": "period"
+										}
+									},
+									{
+										"source": {
+											"path": "$['revenuePerShare']"
+										},
+										"sink": {
+											"name": "revenuePerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['netIncomePerShare']"
+										},
+										"sink": {
+											"name": "netIncomePerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['operatingCashFlowPerShare']"
+										},
+										"sink": {
+											"name": "operatingCashFlowPerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['freeCashFlowPerShare']"
+										},
+										"sink": {
+											"name": "freeCashFlowPerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['cashPerShare']"
+										},
+										"sink": {
+											"name": "cashPerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['bookValuePerShare']"
+										},
+										"sink": {
+											"name": "bookValuePerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tangibleBookValuePerShare']"
+										},
+										"sink": {
+											"name": "tangibleBookValuePerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['shareholdersEquityPerShare']"
+										},
+										"sink": {
+											"name": "shareholdersEquityPerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['interestDebtPerShare']"
+										},
+										"sink": {
+											"name": "interestDebtPerShare"
+										}
+									},
+									{
+										"source": {
+											"path": "$['marketCap']"
+										},
+										"sink": {
+											"name": "marketCap"
+										}
+									},
+									{
+										"source": {
+											"path": "$['enterpriseValue']"
+										},
+										"sink": {
+											"name": "enterpriseValue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['peRatio']"
+										},
+										"sink": {
+											"name": "peRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['priceToSalesRatio']"
+										},
+										"sink": {
+											"name": "priceToSalesRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['pocfratio']"
+										},
+										"sink": {
+											"name": "pocfratio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['pfcfRatio']"
+										},
+										"sink": {
+											"name": "pfcfRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['pbRatio']"
+										},
+										"sink": {
+											"name": "pbRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['ptbRatio']"
+										},
+										"sink": {
+											"name": "ptbRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['evToSales']"
+										},
+										"sink": {
+											"name": "evToSales"
+										}
+									},
+									{
+										"source": {
+											"path": "$['enterpriseValueOverEBITDA']"
+										},
+										"sink": {
+											"name": "enterpriseValueOverEBITDA"
+										}
+									},
+									{
+										"source": {
+											"path": "$['evToOperatingCashFlow']"
+										},
+										"sink": {
+											"name": "evToOperatingCashFlow"
+										}
+									},
+									{
+										"source": {
+											"path": "$['evToFreeCashFlow']"
+										},
+										"sink": {
+											"name": "evToFreeCashFlow"
+										}
+									},
+									{
+										"source": {
+											"path": "$['earningsYield']"
+										},
+										"sink": {
+											"name": "earningsYield"
+										}
+									},
+									{
+										"source": {
+											"path": "$['freeCashFlowYield']"
+										},
+										"sink": {
+											"name": "freeCashFlowYield"
+										}
+									},
+									{
+										"source": {
+											"path": "$['debtToEquity']"
+										},
+										"sink": {
+											"name": "debtToEquity"
+										}
+									},
+									{
+										"source": {
+											"path": "$['debtToAssets']"
+										},
+										"sink": {
+											"name": "debtToAssets"
+										}
+									},
+									{
+										"source": {
+											"path": "$['netDebtToEBITDA']"
+										},
+										"sink": {
+											"name": "netDebtToEBITDA"
+										}
+									},
+									{
+										"source": {
+											"path": "$['currentRatio']"
+										},
+										"sink": {
+											"name": "currentRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['interestCoverage']"
+										},
+										"sink": {
+											"name": "interestCoverage"
+										}
+									},
+									{
+										"source": {
+											"path": "$['incomeQuality']"
+										},
+										"sink": {
+											"name": "incomeQuality"
+										}
+									},
+									{
+										"source": {
+											"path": "$['dividendYield']"
+										},
+										"sink": {
+											"name": "dividendYield"
+										}
+									},
+									{
+										"source": {
+											"path": "$['payoutRatio']"
+										},
+										"sink": {
+											"name": "payoutRatio"
+										}
+									},
+									{
+										"source": {
+											"path": "$['salesGeneralAndAdministrativeToRevenue']"
+										},
+										"sink": {
+											"name": "salesGeneralAndAdministrativeToRevenue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['researchAndDdevelopementToRevenue']"
+										},
+										"sink": {
+											"name": "researchAndDdevelopementToRevenue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['intangiblesToTotalAssets']"
+										},
+										"sink": {
+											"name": "intangiblesToTotalAssets"
+										}
+									},
+									{
+										"source": {
+											"path": "$['capexToOperatingCashFlow']"
+										},
+										"sink": {
+											"name": "capexToOperatingCashFlow"
+										}
+									},
+									{
+										"source": {
+											"path": "$['capexToRevenue']"
+										},
+										"sink": {
+											"name": "capexToRevenue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['capexToDepreciation']"
+										},
+										"sink": {
+											"name": "capexToDepreciation"
+										}
+									},
+									{
+										"source": {
+											"path": "$['stockBasedCompensationToRevenue']"
+										},
+										"sink": {
+											"name": "stockBasedCompensationToRevenue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['grahamNumber']"
+										},
+										"sink": {
+											"name": "grahamNumber"
+										}
+									},
+									{
+										"source": {
+											"path": "$['roic']"
+										},
+										"sink": {
+											"name": "roic"
+										}
+									},
+									{
+										"source": {
+											"path": "$['returnOnTangibleAssets']"
+										},
+										"sink": {
+											"name": "returnOnTangibleAssets"
+										}
+									},
+									{
+										"source": {
+											"path": "$['grahamNetNet']"
+										},
+										"sink": {
+											"name": "grahamNetNet"
+										}
+									},
+									{
+										"source": {
+											"path": "$['workingCapital']"
+										},
+										"sink": {
+											"name": "workingCapital"
+										}
+									},
+									{
+										"source": {
+											"path": "$['tangibleAssetValue']"
+										},
+										"sink": {
+											"name": "tangibleAssetValue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['netCurrentAssetValue']"
+										},
+										"sink": {
+											"name": "netCurrentAssetValue"
+										}
+									},
+									{
+										"source": {
+											"path": "$['investedCapital']"
+										},
+										"sink": {
+											"name": "investedCapital"
+										}
+									},
+									{
+										"source": {
+											"path": "$['averageReceivables']"
+										},
+										"sink": {
+											"name": "averageReceivables"
+										}
+									},
+									{
+										"source": {
+											"path": "$['averagePayables']"
+										},
+										"sink": {
+											"name": "averagePayables"
+										}
+									},
+									{
+										"source": {
+											"path": "$['averageInventory']"
+										},
+										"sink": {
+											"name": "averageInventory"
+										}
+									},
+									{
+										"source": {
+											"path": "$['daysSalesOutstanding']"
+										},
+										"sink": {
+											"name": "daysSalesOutstanding"
+										}
+									},
+									{
+										"source": {
+											"path": "$['daysPayablesOutstanding']"
+										},
+										"sink": {
+											"name": "daysPayablesOutstanding"
+										}
+									},
+									{
+										"source": {
+											"path": "$['daysOfInventoryOnHand']"
+										},
+										"sink": {
+											"name": "daysOfInventoryOnHand"
+										}
+									},
+									{
+										"source": {
+											"path": "$['receivablesTurnover']"
+										},
+										"sink": {
+											"name": "receivablesTurnover"
+										}
+									},
+									{
+										"source": {
+											"path": "$['payablesTurnover']"
+										},
+										"sink": {
+											"name": "payablesTurnover"
+										}
+									},
+									{
+										"source": {
+											"path": "$['inventoryTurnover']"
+										},
+										"sink": {
+											"name": "inventoryTurnover"
+										}
+									},
+									{
+										"source": {
+											"path": "$['roe']"
+										},
+										"sink": {
+											"name": "roe"
+										}
+									},
+									{
+										"source": {
+											"path": "$['capexPerShare']"
+										},
+										"sink": {
+											"name": "capexPerShare"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "stocks_api_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"path": "historical-price-full/msft"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"folderPath": {
+										"value": "@{pipeline().parameters.apiFolderPath}/keymetrics",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"apiFolderPath": {
+						"type": "string",
+						"defaultValue": "api"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-09-28T03:58:16Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/stocks_api_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/raw_datalake_dataset')]",
+				"[concat(variables('factoryId'), '/dataflows/cleansing_ingestion_dataflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ingestion_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "ingestion_pipeline_storage",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Month",
+						"interval": 1,
+						"startTime": "2024-09-27T13:56:00",
+						"endTime": "2024-10-27T13:56:00",
+						"timeZone": "Atlantic Standard Time"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/ingestion_pipeline_storage')]"
+			]
+		}
+	]
+}

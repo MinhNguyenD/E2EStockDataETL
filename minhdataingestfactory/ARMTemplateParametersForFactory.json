@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "minhdataingestfactory"
+		},
+		"HttpServer1_password": {
+			"value": ""
+		},
+		"RestService1_password": {
+			"value": ""
+		},
+		"datalakestorage_link_accountKey": {
+			"value": ""
+		},
+		"storagesource_link_connectionString": {
+			"value": ""
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"value": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}"
+		},
+		"HttpServer1_properties_typeProperties_userName": {
+			"value": "datafactadmin"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"value": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}"
+		},
+		"RestService1_properties_typeProperties_userName": {
+			"value": "datafactadmin"
+		},
+		"datalakestorage_link_properties_typeProperties_url": {
+			"value": "https://dataengineerlakestorage.dfs.core.windows.net/"
+		}
+	}
+}
