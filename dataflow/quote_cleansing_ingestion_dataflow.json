@@ -1,5 +1,5 @@
 {
-	"name": "profile_cleansing_ingestion_dataflow",
+	"name": "quote_cleansing_ingestion_dataflow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -9,15 +9,11 @@
 						"referenceName": "raw_datalake_dataset",
 						"type": "DatasetReference"
 					},
-					"name": "stockinfo"
+					"name": "source1"
 				}
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "stage_datalake_dataset",
-						"type": "DatasetReference"
-					},
 					"name": "sink1"
 				}
 			],
@@ -32,7 +28,7 @@
 			"scriptLines": [
 				"source(output(",
 				"          symbol as string,",
-				"          price as integer,",
+				"          price as string,",
 				"          beta as string,",
 				"          volAvg as string,",
 				"          mktCap as string,",
@@ -70,33 +66,12 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> stockinfo",
-				"stockinfo select(mapColumn(",
-				"          symbol,",
-				"          price,",
-				"          volAvg,",
-				"          mktCap,",
-				"          lastDiv,",
-				"          range,",
-				"          changes,",
-				"          companyName,",
-				"          currency,",
-				"          exchange,",
-				"          exchangeShortName,",
-				"          industry,",
-				"          description,",
-				"          ceo,",
-				"          sector,",
-				"          address",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 select(skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
+				"select1 filter(ERROR_FUNCTION('')) ~> filter1",
 				"filter1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     umask: 0022,",
-				"     preCommands: [],",
-				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
