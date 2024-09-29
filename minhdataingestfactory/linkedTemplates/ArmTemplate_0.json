@@ -898,7 +898,286 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/cleansing_ingestion_dataflow')]",
+			"name": "[concat(parameters('factoryName'), '/historicalprice_cleansing_ingestion_dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "stage_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          symbol as string,",
+						"          price as integer,",
+						"          beta as string,",
+						"          volAvg as string,",
+						"          mktCap as string,",
+						"          lastDiv as string,",
+						"          range as string,",
+						"          changes as string,",
+						"          companyName as string,",
+						"          currency as string,",
+						"          cik as string,",
+						"          isin as string,",
+						"          cusip as string,",
+						"          exchange as string,",
+						"          exchangeShortName as string,",
+						"          industry as string,",
+						"          website as string,",
+						"          description as string,",
+						"          ceo as string,",
+						"          sector as string,",
+						"          country as string,",
+						"          fullTimeEmployees as string,",
+						"          phone as string,",
+						"          address as string,",
+						"          city as string,",
+						"          state as string,",
+						"          zip as string,",
+						"          dcfDiff as string,",
+						"          dcf as string,",
+						"          image as string,",
+						"          ipoDate as string,",
+						"          defaultImage as string,",
+						"          isEtf as string,",
+						"          isActivelyTrading as string,",
+						"          isAdr as string,",
+						"          isFund as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 select(skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/raw_datalake_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/stage_datalake_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/incomestatement_cleansing_ingestion_dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "stage_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          symbol as string,",
+						"          price as integer,",
+						"          beta as string,",
+						"          volAvg as string,",
+						"          mktCap as string,",
+						"          lastDiv as string,",
+						"          range as string,",
+						"          changes as string,",
+						"          companyName as string,",
+						"          currency as string,",
+						"          cik as string,",
+						"          isin as string,",
+						"          cusip as string,",
+						"          exchange as string,",
+						"          exchangeShortName as string,",
+						"          industry as string,",
+						"          website as string,",
+						"          description as string,",
+						"          ceo as string,",
+						"          sector as string,",
+						"          country as string,",
+						"          fullTimeEmployees as string,",
+						"          phone as string,",
+						"          address as string,",
+						"          city as string,",
+						"          state as string,",
+						"          zip as string,",
+						"          dcfDiff as string,",
+						"          dcf as string,",
+						"          image as string,",
+						"          ipoDate as string,",
+						"          defaultImage as string,",
+						"          isEtf as string,",
+						"          isActivelyTrading as string,",
+						"          isAdr as string,",
+						"          isFund as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 select(skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/raw_datalake_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/stage_datalake_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/keymetrics_cleansing_ingestion_dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "stage_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          symbol as string,",
+						"          price as integer,",
+						"          beta as string,",
+						"          volAvg as string,",
+						"          mktCap as string,",
+						"          lastDiv as string,",
+						"          range as string,",
+						"          changes as string,",
+						"          companyName as string,",
+						"          currency as string,",
+						"          cik as string,",
+						"          isin as string,",
+						"          cusip as string,",
+						"          exchange as string,",
+						"          exchangeShortName as string,",
+						"          industry as string,",
+						"          website as string,",
+						"          description as string,",
+						"          ceo as string,",
+						"          sector as string,",
+						"          country as string,",
+						"          fullTimeEmployees as string,",
+						"          phone as string,",
+						"          address as string,",
+						"          city as string,",
+						"          state as string,",
+						"          zip as string,",
+						"          dcfDiff as string,",
+						"          dcf as string,",
+						"          image as string,",
+						"          ipoDate as string,",
+						"          defaultImage as string,",
+						"          isEtf as string,",
+						"          isActivelyTrading as string,",
+						"          isAdr as string,",
+						"          isFund as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 select(skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/raw_datalake_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/stage_datalake_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/profile_cleansing_ingestion_dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -991,6 +1270,99 @@
 						"          address",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/raw_datalake_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/stage_datalake_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/quote_cleansing_ingestion_dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "stage_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          symbol as string,",
+						"          price as integer,",
+						"          beta as string,",
+						"          volAvg as string,",
+						"          mktCap as string,",
+						"          lastDiv as string,",
+						"          range as string,",
+						"          changes as string,",
+						"          companyName as string,",
+						"          currency as string,",
+						"          cik as string,",
+						"          isin as string,",
+						"          cusip as string,",
+						"          exchange as string,",
+						"          exchangeShortName as string,",
+						"          industry as string,",
+						"          website as string,",
+						"          description as string,",
+						"          ceo as string,",
+						"          sector as string,",
+						"          country as string,",
+						"          fullTimeEmployees as string,",
+						"          phone as string,",
+						"          address as string,",
+						"          city as string,",
+						"          state as string,",
+						"          zip as string,",
+						"          dcfDiff as string,",
+						"          dcf as string,",
+						"          image as string,",
+						"          ipoDate as string,",
+						"          defaultImage as string,",
+						"          isEtf as string,",
+						"          isActivelyTrading as string,",
+						"          isAdr as string,",
+						"          isFund as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 select(skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
 						"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
 						"filter1 sink(allowSchemaDrift: true,",
@@ -2484,7 +2856,7 @@
 						]
 					},
 					{
-						"name": "cleansing_ingestion_dataflow",
+						"name": "profile_cleansing_ingestion_dataflow",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
@@ -2504,7 +2876,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "cleansing_ingestion_dataflow",
+								"referenceName": "profile_cleansing_ingestion_dataflow",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -2573,7 +2945,7 @@
 									},
 									{
 										"source": {
-											"path": "$['date']"
+											"path": "$['historical'][0]['date']"
 										},
 										"sink": {
 											"name": "date"
@@ -2581,474 +2953,98 @@
 									},
 									{
 										"source": {
-											"path": "$['calendarYear']"
+											"path": "$['historical'][0]['open']"
 										},
 										"sink": {
-											"name": "calendarYear"
+											"name": "open"
 										}
 									},
 									{
 										"source": {
-											"path": "$['period']"
+											"path": "$['historical'][0]['high']"
 										},
 										"sink": {
-											"name": "period"
+											"name": "high"
 										}
 									},
 									{
 										"source": {
-											"path": "$['revenuePerShare']"
+											"path": "$['historical'][0]['low']"
 										},
 										"sink": {
-											"name": "revenuePerShare"
+											"name": "low"
 										}
 									},
 									{
 										"source": {
-											"path": "$['netIncomePerShare']"
+											"path": "$['historical'][0]['close']"
 										},
 										"sink": {
-											"name": "netIncomePerShare"
+											"name": "close"
 										}
 									},
 									{
 										"source": {
-											"path": "$['operatingCashFlowPerShare']"
+											"path": "$['historical'][0]['adjClose']"
 										},
 										"sink": {
-											"name": "operatingCashFlowPerShare"
+											"name": "adjClose"
 										}
 									},
 									{
 										"source": {
-											"path": "$['freeCashFlowPerShare']"
+											"path": "$['historical'][0]['volume']"
 										},
 										"sink": {
-											"name": "freeCashFlowPerShare"
+											"name": "volume"
 										}
 									},
 									{
 										"source": {
-											"path": "$['cashPerShare']"
+											"path": "$['historical'][0]['unadjustedVolume']"
 										},
 										"sink": {
-											"name": "cashPerShare"
+											"name": "unadjustedVolume"
 										}
 									},
 									{
 										"source": {
-											"path": "$['bookValuePerShare']"
+											"path": "$['historical'][0]['change']"
 										},
 										"sink": {
-											"name": "bookValuePerShare"
+											"name": "change"
 										}
 									},
 									{
 										"source": {
-											"path": "$['tangibleBookValuePerShare']"
+											"path": "$['historical'][0]['changePercent']"
 										},
 										"sink": {
-											"name": "tangibleBookValuePerShare"
+											"name": "changePercent"
 										}
 									},
 									{
 										"source": {
-											"path": "$['shareholdersEquityPerShare']"
+											"path": "$['historical'][0]['vwap']"
 										},
 										"sink": {
-											"name": "shareholdersEquityPerShare"
+											"name": "vwap"
 										}
 									},
 									{
 										"source": {
-											"path": "$['interestDebtPerShare']"
+											"path": "$['historical'][0]['label']"
 										},
 										"sink": {
-											"name": "interestDebtPerShare"
+											"name": "label"
 										}
 									},
 									{
 										"source": {
-											"path": "$['marketCap']"
+											"path": "$['historical'][0]['changeOverTime']"
 										},
 										"sink": {
-											"name": "marketCap"
-										}
-									},
-									{
-										"source": {
-											"path": "$['enterpriseValue']"
-										},
-										"sink": {
-											"name": "enterpriseValue"
-										}
-									},
-									{
-										"source": {
-											"path": "$['peRatio']"
-										},
-										"sink": {
-											"name": "peRatio"
-										}
-									},
-									{
-										"source": {
-											"path": "$['priceToSalesRatio']"
-										},
-										"sink": {
-											"name": "priceToSalesRatio"
-										}
-									},
-									{
-										"source": {
-											"path": "$['pocfratio']"
-										},
-										"sink": {
-											"name": "pocfratio"
-										}
-									},
-									{
-										"source": {
-											"path": "$['pfcfRatio']"
-										},
-										"sink": {
-											"name": "pfcfRatio"
-										}
-									},
-									{
-										"source": {
-											"path": "$['pbRatio']"
-										},
-										"sink": {
-											"name": "pbRatio"
-										}
-									},
-									{
-										"source": {
-											"path": "$['ptbRatio']"
-										},
-										"sink": {
-											"name": "ptbRatio"
-										}
-									},
-									{
-										"source": {
-											"path": "$['evToSales']"
-										},
-										"sink": {
-											"name": "evToSales"
-										}
-									},
-									{
-										"source": {
-											"path": "$['enterpriseValueOverEBITDA']"
-										},
-										"sink": {
-											"name": "enterpriseValueOverEBITDA"
-										}
-									},
-									{
-										"source": {
-											"path": "$['evToOperatingCashFlow']"
-										},
-										"sink": {
-											"name": "evToOperatingCashFlow"
-										}
-									},
-									{
-										"source": {
-											"path": "$['evToFreeCashFlow']"
-										},
-										"sink": {
-											"name": "evToFreeCashFlow"
-										}
-									},
-									{
-										"source": {
-											"path": "$['earningsYield']"
-										},
-										"sink": {
-											"name": "earningsYield"
-										}
-									},
-									{
-										"source": {
-											"path": "$['freeCashFlowYield']"
-										},
-										"sink": {
-											"name": "freeCashFlowYield"
-										}
-									},
-									{
-										"source": {
-											"path": "$['debtToEquity']"
-										},
-										"sink": {
-											"name": "debtToEquity"
-										}
-									},
-									{
-										"source": {
-											"path": "$['debtToAssets']"
-										},
-										"sink": {
-											"name": "debtToAssets"
-										}
-									},
-									{
-										"source": {
-											"path": "$['netDebtToEBITDA']"
-										},
-										"sink": {
-											"name": "netDebtToEBITDA"
-										}
-									},
-									{
-										"source": {
-											"path": "$['currentRatio']"
-										},
-										"sink": {
-											"name": "currentRatio"
-										}
-									},
-									{
-										"source": {
-											"path": "$['interestCoverage']"
-										},
-										"sink": {
-											"name": "interestCoverage"
-										}
-									},
-									{
-										"source": {
-											"path": "$['incomeQuality']"
-										},
-										"sink": {
-											"name": "incomeQuality"
-										}
-									},
-									{
-										"source": {
-											"path": "$['dividendYield']"
-										},
-										"sink": {
-											"name": "dividendYield"
-										}
-									},
-									{
-										"source": {
-											"path": "$['payoutRatio']"
-										},
-										"sink": {
-											"name": "payoutRatio"
-										}
-									},
-									{
-										"source": {
-											"path": "$['salesGeneralAndAdministrativeToRevenue']"
-										},
-										"sink": {
-											"name": "salesGeneralAndAdministrativeToRevenue"
-										}
-									},
-									{
-										"source": {
-											"path": "$['researchAndDdevelopementToRevenue']"
-										},
-										"sink": {
-											"name": "researchAndDdevelopementToRevenue"
-										}
-									},
-									{
-										"source": {
-											"path": "$['intangiblesToTotalAssets']"
-										},
-										"sink": {
-											"name": "intangiblesToTotalAssets"
-										}
-									},
-									{
-										"source": {
-											"path": "$['capexToOperatingCashFlow']"
-										},
-										"sink": {
-											"name": "capexToOperatingCashFlow"
-										}
-									},
-									{
-										"source": {
-											"path": "$['capexToRevenue']"
-										},
-										"sink": {
-											"name": "capexToRevenue"
-										}
-									},
-									{
-										"source": {
-											"path": "$['capexToDepreciation']"
-										},
-										"sink": {
-											"name": "capexToDepreciation"
-										}
-									},
-									{
-										"source": {
-											"path": "$['stockBasedCompensationToRevenue']"
-										},
-										"sink": {
-											"name": "stockBasedCompensationToRevenue"
-										}
-									},
-									{
-										"source": {
-											"path": "$['grahamNumber']"
-										},
-										"sink": {
-											"name": "grahamNumber"
-										}
-									},
-									{
-										"source": {
-											"path": "$['roic']"
-										},
-										"sink": {
-											"name": "roic"
-										}
-									},
-									{
-										"source": {
-											"path": "$['returnOnTangibleAssets']"
-										},
-										"sink": {
-											"name": "returnOnTangibleAssets"
-										}
-									},
-									{
-										"source": {
-											"path": "$['grahamNetNet']"
-										},
-										"sink": {
-											"name": "grahamNetNet"
-										}
-									},
-									{
-										"source": {
-											"path": "$['workingCapital']"
-										},
-										"sink": {
-											"name": "workingCapital"
-										}
-									},
-									{
-										"source": {
-											"path": "$['tangibleAssetValue']"
-										},
-										"sink": {
-											"name": "tangibleAssetValue"
-										}
-									},
-									{
-										"source": {
-											"path": "$['netCurrentAssetValue']"
-										},
-										"sink": {
-											"name": "netCurrentAssetValue"
-										}
-									},
-									{
-										"source": {
-											"path": "$['investedCapital']"
-										},
-										"sink": {
-											"name": "investedCapital"
-										}
-									},
-									{
-										"source": {
-											"path": "$['averageReceivables']"
-										},
-										"sink": {
-											"name": "averageReceivables"
-										}
-									},
-									{
-										"source": {
-											"path": "$['averagePayables']"
-										},
-										"sink": {
-											"name": "averagePayables"
-										}
-									},
-									{
-										"source": {
-											"path": "$['averageInventory']"
-										},
-										"sink": {
-											"name": "averageInventory"
-										}
-									},
-									{
-										"source": {
-											"path": "$['daysSalesOutstanding']"
-										},
-										"sink": {
-											"name": "daysSalesOutstanding"
-										}
-									},
-									{
-										"source": {
-											"path": "$['daysPayablesOutstanding']"
-										},
-										"sink": {
-											"name": "daysPayablesOutstanding"
-										}
-									},
-									{
-										"source": {
-											"path": "$['daysOfInventoryOnHand']"
-										},
-										"sink": {
-											"name": "daysOfInventoryOnHand"
-										}
-									},
-									{
-										"source": {
-											"path": "$['receivablesTurnover']"
-										},
-										"sink": {
-											"name": "receivablesTurnover"
-										}
-									},
-									{
-										"source": {
-											"path": "$['payablesTurnover']"
-										},
-										"sink": {
-											"name": "payablesTurnover"
-										}
-									},
-									{
-										"source": {
-											"path": "$['inventoryTurnover']"
-										},
-										"sink": {
-											"name": "inventoryTurnover"
-										}
-									},
-									{
-										"source": {
-											"path": "$['roe']"
-										},
-										"sink": {
-											"name": "roe"
-										}
-									},
-									{
-										"source": {
-											"path": "$['capexPerShare']"
-										},
-										"sink": {
-											"name": "capexPerShare"
+											"name": "changeOverTime"
 										}
 									}
 								]
@@ -3075,6 +3071,210 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "quote_cleansing_ingestion_dataflow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Copy quote",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "quote_cleansing_ingestion_dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {
+										"folderPath": {
+											"value": "@{pipeline().parameters.apiFolderPath}/quote",
+											"type": "Expression"
+										}
+									},
+									"sink1": {
+										"folderPath": "@{pipeline().parameters.apiFolderPath}/quote"
+									}
+								},
+								"linkedServiceParameters": {
+									"sink1": {
+										"schemaLinkedService": {}
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "incomestatement_cleansing_ingestion_dataflow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Copy income statement",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "incomestatement_cleansing_ingestion_dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {
+										"folderPath": {
+											"value": "@{pipeline().parameters.apiFolderPath}/incomestatement",
+											"type": "Expression"
+										}
+									},
+									"sink1": {
+										"folderPath": {
+											"value": "@{pipeline().parameters.apiFolderPath}/incomestatement",
+											"type": "Expression"
+										}
+									}
+								},
+								"linkedServiceParameters": {
+									"source1": {
+										"schemaLinkedService": {}
+									},
+									"sink1": {
+										"schemaLinkedService": {}
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "keymetrics_cleansing_ingestion_dataflow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Copy key metrics",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "keymetrics_cleansing_ingestion_dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {
+										"folderPath": {
+											"value": "@{pipeline().parameters.apiFolderPath}/keymetrics",
+											"type": "Expression"
+										}
+									},
+									"sink1": {
+										"folderPath": "@{pipeline().parameters.apiFolderPath}/keymetrics"
+									}
+								},
+								"linkedServiceParameters": {
+									"source1": {
+										"schemaLinkedService": {}
+									},
+									"sink1": {
+										"schemaLinkedService": {}
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "historicalprice_cleansing_ingestion_dataflow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Copy historical price",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "historicalprice_cleansing_ingestion_dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {
+										"folderPath": {
+											"value": "@{pipeline().parameters.apiFolderPath}/historicalprice",
+											"type": "Expression"
+										}
+									},
+									"sink1": {
+										"folderPath": {
+											"value": "@{pipeline().parameters.apiFolderPath}/historicalprice",
+											"type": "Expression"
+										}
+									}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -3092,7 +3292,11 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/stocks_api_dataset')]",
 				"[concat(variables('factoryId'), '/datasets/raw_datalake_dataset')]",
-				"[concat(variables('factoryId'), '/dataflows/cleansing_ingestion_dataflow')]"
+				"[concat(variables('factoryId'), '/dataflows/profile_cleansing_ingestion_dataflow')]",
+				"[concat(variables('factoryId'), '/dataflows/quote_cleansing_ingestion_dataflow')]",
+				"[concat(variables('factoryId'), '/dataflows/incomestatement_cleansing_ingestion_dataflow')]",
+				"[concat(variables('factoryId'), '/dataflows/keymetrics_cleansing_ingestion_dataflow')]",
+				"[concat(variables('factoryId'), '/dataflows/historicalprice_cleansing_ingestion_dataflow')]"
 			]
 		},
 		{
