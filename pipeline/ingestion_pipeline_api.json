@@ -1067,7 +1067,8 @@
 									"path": "$['marketCap']"
 								},
 								"sink": {
-									"name": "marketCap"
+									"name": "marketCap",
+									"type": "Double"
 								}
 							},
 							{
