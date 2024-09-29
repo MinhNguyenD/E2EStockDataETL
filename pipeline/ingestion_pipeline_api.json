@@ -337,7 +337,7 @@
 						"referenceName": "stocks_api_dataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"path": "/profile/aapl"
+							"path": "/profile/msft"
 						}
 					}
 				],
@@ -574,7 +574,7 @@
 						"referenceName": "stocks_api_dataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"path": "/quote/aapl"
+							"path": "/quote/msft"
 						}
 					}
 				],
@@ -902,7 +902,7 @@
 						"referenceName": "stocks_api_dataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"path": "financials/income-statement/aapl"
+							"path": "financials/income-statement/msft"
 						}
 					}
 				],
@@ -1454,7 +1454,7 @@
 						"referenceName": "stocks_api_dataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"path": "key-metrics/aapl"
+							"path": "key-metrics/msft"
 						}
 					}
 				],
@@ -1509,6 +1509,558 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "Copy historical price",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "GET"
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "FlattenHierarchy"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['symbol']"
+								},
+								"sink": {
+									"name": "symbol"
+								}
+							},
+							{
+								"source": {
+									"path": "$['date']"
+								},
+								"sink": {
+									"name": "date"
+								}
+							},
+							{
+								"source": {
+									"path": "$['calendarYear']"
+								},
+								"sink": {
+									"name": "calendarYear"
+								}
+							},
+							{
+								"source": {
+									"path": "$['period']"
+								},
+								"sink": {
+									"name": "period"
+								}
+							},
+							{
+								"source": {
+									"path": "$['revenuePerShare']"
+								},
+								"sink": {
+									"name": "revenuePerShare"
+								}
+							},
+							{
+								"source": {
+									"path": "$['netIncomePerShare']"
+								},
+								"sink": {
+									"name": "netIncomePerShare"
+								}
+							},
+							{
+								"source": {
+									"path": "$['operatingCashFlowPerShare']"
+								},
+								"sink": {
+									"name": "operatingCashFlowPerShare"
+								}
+							},
+							{
+								"source": {
+									"path": "$['freeCashFlowPerShare']"
+								},
+								"sink": {
+									"name": "freeCashFlowPerShare"
+								}
+							},
+							{
+								"source": {
+									"path": "$['cashPerShare']"
+								},
+								"sink": {
+									"name": "cashPerShare"
+								}
+							},
+							{
+								"source": {
+									"path": "$['bookValuePerShare']"
+								},
+								"sink": {
+									"name": "bookValuePerShare"
+								}
+							},
+							{
+								"source": {
+									"path": "$['tangibleBookValuePerShare']"
+								},
+								"sink": {
+									"name": "tangibleBookValuePerShare"
+								}
+							},
+							{
+								"source": {
+									"path": "$['shareholdersEquityPerShare']"
+								},
+								"sink": {
+									"name": "shareholdersEquityPerShare"
+								}
+							},
+							{
+								"source": {
+									"path": "$['interestDebtPerShare']"
+								},
+								"sink": {
+									"name": "interestDebtPerShare"
+								}
+							},
+							{
+								"source": {
+									"path": "$['marketCap']"
+								},
+								"sink": {
+									"name": "marketCap"
+								}
+							},
+							{
+								"source": {
+									"path": "$['enterpriseValue']"
+								},
+								"sink": {
+									"name": "enterpriseValue"
+								}
+							},
+							{
+								"source": {
+									"path": "$['peRatio']"
+								},
+								"sink": {
+									"name": "peRatio"
+								}
+							},
+							{
+								"source": {
+									"path": "$['priceToSalesRatio']"
+								},
+								"sink": {
+									"name": "priceToSalesRatio"
+								}
+							},
+							{
+								"source": {
+									"path": "$['pocfratio']"
+								},
+								"sink": {
+									"name": "pocfratio"
+								}
+							},
+							{
+								"source": {
+									"path": "$['pfcfRatio']"
+								},
+								"sink": {
+									"name": "pfcfRatio"
+								}
+							},
+							{
+								"source": {
+									"path": "$['pbRatio']"
+								},
+								"sink": {
+									"name": "pbRatio"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ptbRatio']"
+								},
+								"sink": {
+									"name": "ptbRatio"
+								}
+							},
+							{
+								"source": {
+									"path": "$['evToSales']"
+								},
+								"sink": {
+									"name": "evToSales"
+								}
+							},
+							{
+								"source": {
+									"path": "$['enterpriseValueOverEBITDA']"
+								},
+								"sink": {
+									"name": "enterpriseValueOverEBITDA"
+								}
+							},
+							{
+								"source": {
+									"path": "$['evToOperatingCashFlow']"
+								},
+								"sink": {
+									"name": "evToOperatingCashFlow"
+								}
+							},
+							{
+								"source": {
+									"path": "$['evToFreeCashFlow']"
+								},
+								"sink": {
+									"name": "evToFreeCashFlow"
+								}
+							},
+							{
+								"source": {
+									"path": "$['earningsYield']"
+								},
+								"sink": {
+									"name": "earningsYield"
+								}
+							},
+							{
+								"source": {
+									"path": "$['freeCashFlowYield']"
+								},
+								"sink": {
+									"name": "freeCashFlowYield"
+								}
+							},
+							{
+								"source": {
+									"path": "$['debtToEquity']"
+								},
+								"sink": {
+									"name": "debtToEquity"
+								}
+							},
+							{
+								"source": {
+									"path": "$['debtToAssets']"
+								},
+								"sink": {
+									"name": "debtToAssets"
+								}
+							},
+							{
+								"source": {
+									"path": "$['netDebtToEBITDA']"
+								},
+								"sink": {
+									"name": "netDebtToEBITDA"
+								}
+							},
+							{
+								"source": {
+									"path": "$['currentRatio']"
+								},
+								"sink": {
+									"name": "currentRatio"
+								}
+							},
+							{
+								"source": {
+									"path": "$['interestCoverage']"
+								},
+								"sink": {
+									"name": "interestCoverage"
+								}
+							},
+							{
+								"source": {
+									"path": "$['incomeQuality']"
+								},
+								"sink": {
+									"name": "incomeQuality"
+								}
+							},
+							{
+								"source": {
+									"path": "$['dividendYield']"
+								},
+								"sink": {
+									"name": "dividendYield"
+								}
+							},
+							{
+								"source": {
+									"path": "$['payoutRatio']"
+								},
+								"sink": {
+									"name": "payoutRatio"
+								}
+							},
+							{
+								"source": {
+									"path": "$['salesGeneralAndAdministrativeToRevenue']"
+								},
+								"sink": {
+									"name": "salesGeneralAndAdministrativeToRevenue"
+								}
+							},
+							{
+								"source": {
+									"path": "$['researchAndDdevelopementToRevenue']"
+								},
+								"sink": {
+									"name": "researchAndDdevelopementToRevenue"
+								}
+							},
+							{
+								"source": {
+									"path": "$['intangiblesToTotalAssets']"
+								},
+								"sink": {
+									"name": "intangiblesToTotalAssets"
+								}
+							},
+							{
+								"source": {
+									"path": "$['capexToOperatingCashFlow']"
+								},
+								"sink": {
+									"name": "capexToOperatingCashFlow"
+								}
+							},
+							{
+								"source": {
+									"path": "$['capexToRevenue']"
+								},
+								"sink": {
+									"name": "capexToRevenue"
+								}
+							},
+							{
+								"source": {
+									"path": "$['capexToDepreciation']"
+								},
+								"sink": {
+									"name": "capexToDepreciation"
+								}
+							},
+							{
+								"source": {
+									"path": "$['stockBasedCompensationToRevenue']"
+								},
+								"sink": {
+									"name": "stockBasedCompensationToRevenue"
+								}
+							},
+							{
+								"source": {
+									"path": "$['grahamNumber']"
+								},
+								"sink": {
+									"name": "grahamNumber"
+								}
+							},
+							{
+								"source": {
+									"path": "$['roic']"
+								},
+								"sink": {
+									"name": "roic"
+								}
+							},
+							{
+								"source": {
+									"path": "$['returnOnTangibleAssets']"
+								},
+								"sink": {
+									"name": "returnOnTangibleAssets"
+								}
+							},
+							{
+								"source": {
+									"path": "$['grahamNetNet']"
+								},
+								"sink": {
+									"name": "grahamNetNet"
+								}
+							},
+							{
+								"source": {
+									"path": "$['workingCapital']"
+								},
+								"sink": {
+									"name": "workingCapital"
+								}
+							},
+							{
+								"source": {
+									"path": "$['tangibleAssetValue']"
+								},
+								"sink": {
+									"name": "tangibleAssetValue"
+								}
+							},
+							{
+								"source": {
+									"path": "$['netCurrentAssetValue']"
+								},
+								"sink": {
+									"name": "netCurrentAssetValue"
+								}
+							},
+							{
+								"source": {
+									"path": "$['investedCapital']"
+								},
+								"sink": {
+									"name": "investedCapital"
+								}
+							},
+							{
+								"source": {
+									"path": "$['averageReceivables']"
+								},
+								"sink": {
+									"name": "averageReceivables"
+								}
+							},
+							{
+								"source": {
+									"path": "$['averagePayables']"
+								},
+								"sink": {
+									"name": "averagePayables"
+								}
+							},
+							{
+								"source": {
+									"path": "$['averageInventory']"
+								},
+								"sink": {
+									"name": "averageInventory"
+								}
+							},
+							{
+								"source": {
+									"path": "$['daysSalesOutstanding']"
+								},
+								"sink": {
+									"name": "daysSalesOutstanding"
+								}
+							},
+							{
+								"source": {
+									"path": "$['daysPayablesOutstanding']"
+								},
+								"sink": {
+									"name": "daysPayablesOutstanding"
+								}
+							},
+							{
+								"source": {
+									"path": "$['daysOfInventoryOnHand']"
+								},
+								"sink": {
+									"name": "daysOfInventoryOnHand"
+								}
+							},
+							{
+								"source": {
+									"path": "$['receivablesTurnover']"
+								},
+								"sink": {
+									"name": "receivablesTurnover"
+								}
+							},
+							{
+								"source": {
+									"path": "$['payablesTurnover']"
+								},
+								"sink": {
+									"name": "payablesTurnover"
+								}
+							},
+							{
+								"source": {
+									"path": "$['inventoryTurnover']"
+								},
+								"sink": {
+									"name": "inventoryTurnover"
+								}
+							},
+							{
+								"source": {
+									"path": "$['roe']"
+								},
+								"sink": {
+									"name": "roe"
+								}
+							},
+							{
+								"source": {
+									"path": "$['capexPerShare']"
+								},
+								"sink": {
+									"name": "capexPerShare"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "stocks_api_dataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"path": "historical-price-full/msft"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "raw_datalake_dataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"folderPath": {
+								"value": "@{pipeline().parameters.apiFolderPath}/keymetrics",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
