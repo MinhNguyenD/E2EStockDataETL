@@ -5,11 +5,19 @@
 		"typeProperties": {
 			"sources": [
 				{
+					"dataset": {
+						"referenceName": "raw_datalake_dataset",
+						"type": "DatasetReference"
+					},
 					"name": "source1"
 				}
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "stage_datalake_dataset",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
 				}
 			],
@@ -22,13 +30,55 @@
 				}
 			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1",
+				"source(output(",
+				"          symbol as string,",
+				"          price as integer,",
+				"          beta as string,",
+				"          volAvg as string,",
+				"          mktCap as string,",
+				"          lastDiv as string,",
+				"          range as string,",
+				"          changes as string,",
+				"          companyName as string,",
+				"          currency as string,",
+				"          cik as string,",
+				"          isin as string,",
+				"          cusip as string,",
+				"          exchange as string,",
+				"          exchangeShortName as string,",
+				"          industry as string,",
+				"          website as string,",
+				"          description as string,",
+				"          ceo as string,",
+				"          sector as string,",
+				"          country as string,",
+				"          fullTimeEmployees as string,",
+				"          phone as string,",
+				"          address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          zip as string,",
+				"          dcfDiff as string,",
+				"          dcf as string,",
+				"          image as string,",
+				"          ipoDate as string,",
+				"          defaultImage as string,",
+				"          isEtf as string,",
+				"          isActivelyTrading as string,",
+				"          isAdr as string,",
+				"          isFund as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
 				"source1 select(skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 filter(ERROR_FUNCTION('')) ~> filter1",
+				"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
 				"filter1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]

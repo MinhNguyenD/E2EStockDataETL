@@ -1708,7 +1708,18 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "quote_cleansing_ingestion_dataflow",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"folderPath": {
+									"value": "@{pipeline().parameters.apiFolderPath}/quote",
+									"type": "Expression"
+								}
+							},
+							"sink1": {
+								"folderPath": "@{pipeline().parameters.apiFolderPath}/quote"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -1739,7 +1750,21 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "incomestatement_cleansing_ingestion_dataflow",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"folderPath": {
+									"value": "@{pipeline().parameters.apiFolderPath}/incomestatement",
+									"type": "Expression"
+								}
+							},
+							"sink1": {
+								"folderPath": {
+									"value": "@{pipeline().parameters.apiFolderPath}/incomestatement",
+									"type": "Expression"
+								}
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -1770,7 +1795,18 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "keymetrics_cleansing_ingestion_dataflow",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"folderPath": {
+									"value": "@{pipeline().parameters.apiFolderPath}/keymetrics",
+									"type": "Expression"
+								}
+							},
+							"sink1": {
+								"folderPath": "@{pipeline().parameters.apiFolderPath}/keymetrics"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -1801,7 +1837,21 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "historicalprice_cleansing_ingestion_dataflow",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"folderPath": {
+									"value": "@{pipeline().parameters.apiFolderPath}/historicalprice",
+									"type": "Expression"
+								}
+							},
+							"sink1": {
+								"folderPath": {
+									"value": "@{pipeline().parameters.apiFolderPath}/historicalprice",
+									"type": "Expression"
+								}
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
