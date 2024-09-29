@@ -1068,7 +1068,7 @@
 								},
 								"sink": {
 									"name": "marketCap",
-									"type": "Double"
+									"type": "String"
 								}
 							},
 							{
@@ -1447,7 +1447,8 @@
 									"name": "capexPerShare"
 								}
 							}
-						]
+						],
+						"mapComplexValuesToString": false
 					}
 				},
 				"inputs": [
