@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "minhdataingestfactory"
 		},
+		"AzureDatabricks1_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
+		},
 		"HttpServer1_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'HttpServer1'"
@@ -57,6 +61,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureDatabricks1_accessToken": {
+						"value": "[parameters('AzureDatabricks1_accessToken')]"
 					},
 					"HttpServer1_password": {
 						"value": "[parameters('HttpServer1_password')]"

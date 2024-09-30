@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "minhdataingestfactory"
 		},
+		"AzureDatabricks1_accessToken": {
+			"value": ""
+		},
 		"HttpServer1_password": {
 			"value": ""
 		},
