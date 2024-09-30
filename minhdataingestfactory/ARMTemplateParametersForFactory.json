@@ -8,9 +8,6 @@
 		"HttpServer1_password": {
 			"value": ""
 		},
-		"RestService1_password": {
-			"value": ""
-		},
 		"datalakestorage_link_accountKey": {
 			"value": ""
 		},
@@ -18,15 +15,9 @@
 			"value": ""
 		},
 		"HttpServer1_properties_typeProperties_url": {
-			"value": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}"
+			"value": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}&@{linkedService().query}"
 		},
 		"HttpServer1_properties_typeProperties_userName": {
-			"value": "datafactadmin"
-		},
-		"RestService1_properties_typeProperties_url": {
-			"value": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}"
-		},
-		"RestService1_properties_typeProperties_userName": {
 			"value": "datafactadmin"
 		},
 		"datalakestorage_link_properties_typeProperties_url": {

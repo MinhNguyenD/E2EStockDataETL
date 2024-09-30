@@ -11,10 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'HttpServer1'"
 		},
-		"RestService1_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'RestService1'"
-		},
 		"datalakestorage_link_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'datalakestorage_link'"
@@ -25,17 +21,9 @@
 		},
 		"HttpServer1_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}"
+			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}&@{linkedService().query}"
 		},
 		"HttpServer1_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "datafactadmin"
-		},
-		"RestService1_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}"
-		},
-		"RestService1_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "datafactadmin"
 		},
@@ -618,7 +606,8 @@
 											"name": "timestamp"
 										}
 									}
-								]
+								],
+								"collectionReference": ""
 							}
 						},
 						"inputs": [
@@ -946,7 +935,8 @@
 											"name": "Net Profit Margin"
 										}
 									}
-								]
+								],
+								"collectionReference": ""
 							}
 						},
 						"inputs": [
@@ -1112,22 +1102,6 @@
 										},
 										"sink": {
 											"name": "interestDebtPerShare"
-										}
-									},
-									{
-										"source": {
-											"path": "$['marketCap']"
-										},
-										"sink": {
-											"name": "marketCap"
-										}
-									},
-									{
-										"source": {
-											"path": "$['enterpriseValue']"
-										},
-										"sink": {
-											"name": "enterpriseValue"
 										}
 									},
 									{
@@ -1497,8 +1471,28 @@
 										"sink": {
 											"name": "capexPerShare"
 										}
+									},
+									{
+										"source": {
+											"path": "$['marketCap']"
+										},
+										"sink": {
+											"name": "marketCap",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['enterpriseValue']"
+										},
+										"sink": {
+											"name": "enterpriseValue",
+											"type": "String"
+										}
 									}
-								]
+								],
+								"collectionReference": "",
+								"mapComplexValuesToString": true
 							}
 						},
 						"inputs": [
@@ -1613,7 +1607,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['date']"
+											"path": "[['date']"
 										},
 										"sink": {
 											"name": "date"
@@ -1621,7 +1615,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['open']"
+											"path": "[['open']"
 										},
 										"sink": {
 											"name": "open"
@@ -1629,7 +1623,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['high']"
+											"path": "[['high']"
 										},
 										"sink": {
 											"name": "high"
@@ -1637,7 +1631,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['low']"
+											"path": "[['low']"
 										},
 										"sink": {
 											"name": "low"
@@ -1645,7 +1639,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['close']"
+											"path": "[['close']"
 										},
 										"sink": {
 											"name": "close"
@@ -1653,7 +1647,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['adjClose']"
+											"path": "[['adjClose']"
 										},
 										"sink": {
 											"name": "adjClose"
@@ -1661,7 +1655,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['volume']"
+											"path": "[['volume']"
 										},
 										"sink": {
 											"name": "volume"
@@ -1669,7 +1663,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['unadjustedVolume']"
+											"path": "[['unadjustedVolume']"
 										},
 										"sink": {
 											"name": "unadjustedVolume"
@@ -1677,7 +1671,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['change']"
+											"path": "[['change']"
 										},
 										"sink": {
 											"name": "change"
@@ -1685,7 +1679,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['changePercent']"
+											"path": "[['changePercent']"
 										},
 										"sink": {
 											"name": "changePercent"
@@ -1693,7 +1687,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['vwap']"
+											"path": "[['vwap']"
 										},
 										"sink": {
 											"name": "vwap"
@@ -1701,7 +1695,7 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['label']"
+											"path": "[['label']"
 										},
 										"sink": {
 											"name": "label"
@@ -1709,13 +1703,14 @@
 									},
 									{
 										"source": {
-											"path": "$['historical'][0]['changeOverTime']"
+											"path": "[['changeOverTime']"
 										},
 										"sink": {
 											"name": "changeOverTime"
 										}
 									}
-								]
+								],
+								"collectionReference": "$['historical']"
 							}
 						},
 						"inputs": [
@@ -1723,7 +1718,8 @@
 								"referenceName": "stocks_api_dataset",
 								"type": "DatasetReference",
 								"parameters": {
-									"path": "historical-price-full/msft"
+									"path": "historical-price-full/msft",
+									"query": "from=2018-01-01"
 								}
 							}
 						],
@@ -1733,7 +1729,7 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"folderPath": {
-										"value": "@{pipeline().parameters.apiFolderPath}/keymetrics",
+										"value": "@{pipeline().parameters.apiFolderPath}/historicalprice",
 										"type": "Expression"
 									}
 								}
@@ -1773,11 +1769,6 @@
 									},
 									"sink1": {
 										"folderPath": "@{pipeline().parameters.apiFolderPath}/quote"
-									}
-								},
-								"linkedServiceParameters": {
-									"sink1": {
-										"schemaLinkedService": {}
 									}
 								}
 							},
@@ -1826,14 +1817,6 @@
 											"type": "Expression"
 										}
 									}
-								},
-								"linkedServiceParameters": {
-									"source1": {
-										"schemaLinkedService": {}
-									},
-									"sink1": {
-										"schemaLinkedService": {}
-									}
 								}
 							},
 							"staging": {},
@@ -1877,14 +1860,6 @@
 									},
 									"sink1": {
 										"folderPath": "@{pipeline().parameters.apiFolderPath}/keymetrics"
-									}
-								},
-								"linkedServiceParameters": {
-									"source1": {
-										"schemaLinkedService": {}
-									},
-									"sink1": {
-										"schemaLinkedService": {}
 									}
 								}
 							},
@@ -1933,8 +1908,7 @@
 											"type": "Expression"
 										}
 									}
-								},
-								"linkedServiceParameters": {}
+								}
 							},
 							"staging": {},
 							"compute": {
@@ -2334,152 +2308,7 @@
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
-				"schema": [
-					{
-						"name": "symbol",
-						"type": "String"
-					},
-					{
-						"name": "price",
-						"type": "String"
-					},
-					{
-						"name": "beta",
-						"type": "String"
-					},
-					{
-						"name": "volAvg",
-						"type": "String"
-					},
-					{
-						"name": "mktCap",
-						"type": "String"
-					},
-					{
-						"name": "lastDiv",
-						"type": "String"
-					},
-					{
-						"name": "range",
-						"type": "String"
-					},
-					{
-						"name": "changes",
-						"type": "String"
-					},
-					{
-						"name": "companyName",
-						"type": "String"
-					},
-					{
-						"name": "currency",
-						"type": "String"
-					},
-					{
-						"name": "cik",
-						"type": "String"
-					},
-					{
-						"name": "isin",
-						"type": "String"
-					},
-					{
-						"name": "cusip",
-						"type": "String"
-					},
-					{
-						"name": "exchange",
-						"type": "String"
-					},
-					{
-						"name": "exchangeShortName",
-						"type": "String"
-					},
-					{
-						"name": "industry",
-						"type": "String"
-					},
-					{
-						"name": "website",
-						"type": "String"
-					},
-					{
-						"name": "description",
-						"type": "String"
-					},
-					{
-						"name": "ceo",
-						"type": "String"
-					},
-					{
-						"name": "sector",
-						"type": "String"
-					},
-					{
-						"name": "country",
-						"type": "String"
-					},
-					{
-						"name": "fullTimeEmployees",
-						"type": "String"
-					},
-					{
-						"name": "phone",
-						"type": "String"
-					},
-					{
-						"name": "address",
-						"type": "String"
-					},
-					{
-						"name": "city",
-						"type": "String"
-					},
-					{
-						"name": "state",
-						"type": "String"
-					},
-					{
-						"name": "zip",
-						"type": "String"
-					},
-					{
-						"name": "dcfDiff",
-						"type": "String"
-					},
-					{
-						"name": "dcf",
-						"type": "String"
-					},
-					{
-						"name": "image",
-						"type": "String"
-					},
-					{
-						"name": "ipoDate",
-						"type": "String"
-					},
-					{
-						"name": "defaultImage",
-						"type": "String"
-					},
-					{
-						"name": "isEtf",
-						"type": "String"
-					},
-					{
-						"name": "isActivelyTrading",
-						"type": "String"
-					},
-					{
-						"name": "isAdr",
-						"type": "String"
-					},
-					{
-						"name": "isFund",
-						"type": "String"
-					}
-				]
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/datalakestorage_link')]"
@@ -2535,12 +2364,20 @@
 							"value": "@dataset().path",
 							"type": "Expression"
 						},
-						"apiKey": "7rPnDmy0O4hVrxTEa31u0aqwYFnTyKmj"
+						"apiKey": "7rPnDmy0O4hVrxTEa31u0aqwYFnTyKmj",
+						"query": {
+							"value": "@dataset().query",
+							"type": "Expression"
+						}
 					}
 				},
 				"parameters": {
 					"path": {
 						"type": "string"
+					},
+					"query": {
+						"type": "string",
+						"defaultValue": "\"\""
 					}
 				},
 				"annotations": [],
@@ -2550,119 +2387,7 @@
 						"type": "HttpServerLocation"
 					}
 				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"symbol": {
-							"type": "string"
-						},
-						"price": {
-							"type": "integer"
-						},
-						"beta": {
-							"type": "number"
-						},
-						"volAvg": {
-							"type": "integer"
-						},
-						"mktCap": {
-							"type": "integer"
-						},
-						"lastDiv": {
-							"type": "integer"
-						},
-						"range": {
-							"type": "string"
-						},
-						"changes": {
-							"type": "number"
-						},
-						"companyName": {
-							"type": "string"
-						},
-						"currency": {
-							"type": "string"
-						},
-						"cik": {
-							"type": "string"
-						},
-						"isin": {
-							"type": "string"
-						},
-						"cusip": {
-							"type": "string"
-						},
-						"exchange": {
-							"type": "string"
-						},
-						"exchangeShortName": {
-							"type": "string"
-						},
-						"industry": {
-							"type": "string"
-						},
-						"website": {
-							"type": "string"
-						},
-						"description": {
-							"type": "string"
-						},
-						"ceo": {
-							"type": "string"
-						},
-						"sector": {
-							"type": "string"
-						},
-						"country": {
-							"type": "string"
-						},
-						"fullTimeEmployees": {
-							"type": "string"
-						},
-						"phone": {
-							"type": "string"
-						},
-						"address": {
-							"type": "string"
-						},
-						"city": {
-							"type": "string"
-						},
-						"state": {
-							"type": "string"
-						},
-						"zip": {
-							"type": "string"
-						},
-						"dcfDiff": {
-							"type": "number"
-						},
-						"dcf": {
-							"type": "number"
-						},
-						"image": {
-							"type": "string"
-						},
-						"ipoDate": {
-							"type": "string"
-						},
-						"defaultImage": {
-							"type": "boolean"
-						},
-						"isEtf": {
-							"type": "boolean"
-						},
-						"isActivelyTrading": {
-							"type": "boolean"
-						},
-						"isAdr": {
-							"type": "boolean"
-						},
-						"isFund": {
-							"type": "boolean"
-						}
-					}
-				}
+				"schema": {}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/HttpServer1')]"
@@ -2740,6 +2465,9 @@
 					"apiKey": {
 						"type": "string",
 						"defaultValue": "7rPnDmy0O4hVrxTEa31u0aqwYFnTyKmj"
+					},
+					"query": {
+						"type": "string"
 					}
 				},
 				"annotations": [],
@@ -2752,35 +2480,6 @@
 					"password": {
 						"type": "SecureString",
 						"value": "[parameters('HttpServer1_password')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/RestService1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"parameters": {
-					"path": {
-						"type": "string"
-					},
-					"apiKey": {
-						"type": "string",
-						"defaultValue": "7rPnDmy0O4hVrxTEa31u0aqwYFnTyKmj"
-					}
-				},
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('RestService1_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Basic",
-					"userName": "[parameters('RestService1_properties_typeProperties_userName')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('RestService1_password')]"
 					}
 				}
 			},
@@ -2883,48 +2582,42 @@
 					"scriptLines": [
 						"source(output(",
 						"          symbol as string,",
-						"          price as integer,",
-						"          beta as string,",
-						"          volAvg as string,",
-						"          mktCap as string,",
-						"          lastDiv as string,",
-						"          range as string,",
-						"          changes as string,",
-						"          companyName as string,",
-						"          currency as string,",
-						"          cik as string,",
-						"          isin as string,",
-						"          cusip as string,",
-						"          exchange as string,",
-						"          exchangeShortName as string,",
-						"          industry as string,",
-						"          website as string,",
-						"          description as string,",
-						"          ceo as string,",
-						"          sector as string,",
-						"          country as string,",
-						"          fullTimeEmployees as string,",
-						"          phone as string,",
-						"          address as string,",
-						"          city as string,",
-						"          state as string,",
-						"          zip as string,",
-						"          dcfDiff as string,",
-						"          dcf as string,",
-						"          image as string,",
-						"          ipoDate as string,",
-						"          defaultImage as string,",
-						"          isEtf as string,",
-						"          isActivelyTrading as string,",
-						"          isAdr as string,",
-						"          isFund as string",
+						"          date as date,",
+						"          open as double,",
+						"          high as double,",
+						"          low as double,",
+						"          close as double,",
+						"          adjClose as double,",
+						"          volume as integer,",
+						"          unadjustedVolume as integer,",
+						"          change as double,",
+						"          changePercent as double,",
+						"          vwap as double,",
+						"          label as string,",
+						"          changeOverTime as double",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 select(skipDuplicateMapInputs: true,",
+						"source1 select(mapColumn(",
+						"          symbol,",
+						"          date,",
+						"          open,",
+						"          high,",
+						"          low,",
+						"          close,",
+						"          adjClose,",
+						"          volume,",
+						"          change,",
+						"          changePercent,",
+						"          vwap,",
+						"          changeOverTime",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
+						"select1 filter(!isNull(date) && open >= 0 && high >= 0 && low >= 0 && close >= 0 && adjClose >= 0 && volume >= 0 && !isNull(change)",
+						"",
+						") ~> filter1",
 						"filter1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",
@@ -2976,48 +2669,59 @@
 					"scriptLines": [
 						"source(output(",
 						"          symbol as string,",
-						"          price as integer,",
-						"          beta as string,",
-						"          volAvg as string,",
-						"          mktCap as string,",
-						"          lastDiv as string,",
-						"          range as string,",
-						"          changes as string,",
-						"          companyName as string,",
-						"          currency as string,",
-						"          cik as string,",
-						"          isin as string,",
-						"          cusip as string,",
-						"          exchange as string,",
-						"          exchangeShortName as string,",
-						"          industry as string,",
-						"          website as string,",
-						"          description as string,",
-						"          ceo as string,",
-						"          sector as string,",
-						"          country as string,",
-						"          fullTimeEmployees as string,",
-						"          phone as string,",
-						"          address as string,",
-						"          city as string,",
-						"          state as string,",
-						"          zip as string,",
-						"          dcfDiff as string,",
-						"          dcf as string,",
-						"          image as string,",
-						"          ipoDate as string,",
-						"          defaultImage as string,",
-						"          isEtf as string,",
-						"          isActivelyTrading as string,",
-						"          isAdr as string,",
-						"          isFund as string",
+						"          date as date,",
+						"          Revenue as long,",
+						"          {Revenue Growth} as string,",
+						"          {Cost of Revenue} as long,",
+						"          {Gross Profit} as long,",
+						"          {R&D Expenses} as long,",
+						"          {SG&A Expense} as long,",
+						"          {Operating Expenses} as long,",
+						"          {Operating Income} as long,",
+						"          {Interest Expense} as long,",
+						"          {Earnings before Tax} as long,",
+						"          {Income Tax Expense} as long,",
+						"          {Net Income - Non-Controlling int} as string,",
+						"          {Net Income - Discontinued ops} as string,",
+						"          {Net Income} as long,",
+						"          {Preferred Dividends} as string,",
+						"          {Net Income Com} as long,",
+						"          EPS as double,",
+						"          {EPS Diluted} as double,",
+						"          {Weighted Average Shs Out} as long,",
+						"          {Weighted Average Shs Out (Dil)} as long,",
+						"          {Dividend per Share} as string,",
+						"          {Gross Margin} as double,",
+						"          {EBITDA Margin} as double,",
+						"          {EBIT Margin} as string,",
+						"          {Profit Margin} as double,",
+						"          {Free Cash Flow margin} as string,",
+						"          EBITDA as long,",
+						"          EBIT as long,",
+						"          {Consolidated Income} as string,",
+						"          {Earnings Before Tax Margin} as double,",
+						"          {Net Profit Margin} as double",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 select(skipDuplicateMapInputs: true,",
+						"source1 select(mapColumn(",
+						"          symbol,",
+						"          date,",
+						"          Revenue,",
+						"          {Revenue Growth},",
+						"          {Gross Profit},",
+						"          {Operating Income},",
+						"          {Net Income},",
+						"          EPS,",
+						"          {EBITDA Margin},",
+						"          EBITDA,",
+						"          {Net Profit Margin}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
+						"select1 filter(!isNull(Revenue) && !isNull({Net Income}) && !isNull(EPS)",
+						") ~> filter1",
 						"filter1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",
@@ -3069,48 +2773,91 @@
 					"scriptLines": [
 						"source(output(",
 						"          symbol as string,",
-						"          price as integer,",
-						"          beta as string,",
-						"          volAvg as string,",
-						"          mktCap as string,",
-						"          lastDiv as string,",
-						"          range as string,",
-						"          changes as string,",
-						"          companyName as string,",
-						"          currency as string,",
-						"          cik as string,",
-						"          isin as string,",
-						"          cusip as string,",
-						"          exchange as string,",
-						"          exchangeShortName as string,",
-						"          industry as string,",
-						"          website as string,",
-						"          description as string,",
-						"          ceo as string,",
-						"          sector as string,",
-						"          country as string,",
-						"          fullTimeEmployees as string,",
-						"          phone as string,",
-						"          address as string,",
-						"          city as string,",
-						"          state as string,",
-						"          zip as string,",
-						"          dcfDiff as string,",
-						"          dcf as string,",
-						"          image as string,",
-						"          ipoDate as string,",
-						"          defaultImage as string,",
-						"          isEtf as string,",
-						"          isActivelyTrading as string,",
-						"          isAdr as string,",
-						"          isFund as string",
+						"          date as date,",
+						"          calendarYear as short,",
+						"          period as string,",
+						"          revenuePerShare as double,",
+						"          netIncomePerShare as double,",
+						"          operatingCashFlowPerShare as double,",
+						"          freeCashFlowPerShare as double,",
+						"          cashPerShare as double,",
+						"          bookValuePerShare as double,",
+						"          tangibleBookValuePerShare as double,",
+						"          shareholdersEquityPerShare as double,",
+						"          interestDebtPerShare as double,",
+						"          peRatio as double,",
+						"          priceToSalesRatio as double,",
+						"          pocfratio as double,",
+						"          pfcfRatio as double,",
+						"          pbRatio as double,",
+						"          ptbRatio as double,",
+						"          evToSales as double,",
+						"          enterpriseValueOverEBITDA as double,",
+						"          evToOperatingCashFlow as double,",
+						"          evToFreeCashFlow as double,",
+						"          earningsYield as double,",
+						"          freeCashFlowYield as double,",
+						"          debtToEquity as double,",
+						"          debtToAssets as double,",
+						"          netDebtToEBITDA as double,",
+						"          currentRatio as double,",
+						"          interestCoverage as double,",
+						"          incomeQuality as double,",
+						"          dividendYield as double,",
+						"          payoutRatio as double,",
+						"          salesGeneralAndAdministrativeToRevenue as double,",
+						"          researchAndDdevelopementToRevenue as double,",
+						"          intangiblesToTotalAssets as double,",
+						"          capexToOperatingCashFlow as double,",
+						"          capexToRevenue as double,",
+						"          capexToDepreciation as double,",
+						"          stockBasedCompensationToRevenue as double,",
+						"          grahamNumber as double,",
+						"          roic as double,",
+						"          returnOnTangibleAssets as double,",
+						"          grahamNetNet as double,",
+						"          workingCapital as long,",
+						"          tangibleAssetValue as long,",
+						"          netCurrentAssetValue as long,",
+						"          investedCapital as long,",
+						"          averageReceivables as long,",
+						"          averagePayables as long,",
+						"          averageInventory as long,",
+						"          daysSalesOutstanding as double,",
+						"          daysPayablesOutstanding as double,",
+						"          daysOfInventoryOnHand as double,",
+						"          receivablesTurnover as double,",
+						"          payablesTurnover as double,",
+						"          inventoryTurnover as double,",
+						"          roe as double,",
+						"          capexPerShare as double,",
+						"          marketCap as double,",
+						"          enterpriseValue as double",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 select(skipDuplicateMapInputs: true,",
+						"source1 select(mapColumn(",
+						"          symbol,",
+						"          date,",
+						"          revenuePerShare,",
+						"          netIncomePerShare,",
+						"          operatingCashFlowPerShare,",
+						"          freeCashFlowPerShare,",
+						"          cashPerShare,",
+						"          peRatio,",
+						"          priceToSalesRatio,",
+						"          pbRatio,",
+						"          debtToEquity,",
+						"          currentRatio,",
+						"          interestCoverage,",
+						"          roe,",
+						"          marketCap",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
+						"select1 filter(!isNull(peRatio) && !isNull(netIncomePerShare) && !isNull(operatingCashFlowPerShare) && !isNull(revenuePerShare) && !isNull(freeCashFlowPerShare) && debtToEquity >= 0 && interestCoverage >= 0",
+						") ~> filter1",
 						"filter1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",
@@ -3162,18 +2909,18 @@
 					"scriptLines": [
 						"source(output(",
 						"          symbol as string,",
-						"          price as integer,",
-						"          beta as string,",
-						"          volAvg as string,",
-						"          mktCap as string,",
-						"          lastDiv as string,",
+						"          price as double,",
+						"          beta as double,",
+						"          volAvg as integer,",
+						"          mktCap as long,",
+						"          lastDiv as double,",
 						"          range as string,",
-						"          changes as string,",
+						"          changes as double,",
 						"          companyName as string,",
 						"          currency as string,",
-						"          cik as string,",
+						"          cik as integer,",
 						"          isin as string,",
-						"          cusip as string,",
+						"          cusip as integer,",
 						"          exchange as string,",
 						"          exchangeShortName as string,",
 						"          industry as string,",
@@ -3182,21 +2929,21 @@
 						"          ceo as string,",
 						"          sector as string,",
 						"          country as string,",
-						"          fullTimeEmployees as string,",
+						"          fullTimeEmployees as integer,",
 						"          phone as string,",
 						"          address as string,",
 						"          city as string,",
 						"          state as string,",
 						"          zip as string,",
-						"          dcfDiff as string,",
-						"          dcf as string,",
+						"          dcfDiff as double,",
+						"          dcf as double,",
 						"          image as string,",
-						"          ipoDate as string,",
-						"          defaultImage as string,",
-						"          isEtf as string,",
-						"          isActivelyTrading as string,",
-						"          isAdr as string,",
-						"          isFund as string",
+						"          ipoDate as date,",
+						"          defaultImage as boolean,",
+						"          isEtf as boolean,",
+						"          isActivelyTrading as boolean,",
+						"          isAdr as boolean,",
+						"          isFund as boolean",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -3208,16 +2955,7 @@
 						"          mktCap,",
 						"          lastDiv,",
 						"          range,",
-						"          changes,",
-						"          companyName,",
-						"          currency,",
-						"          exchange,",
-						"          exchangeShortName,",
-						"          industry,",
-						"          description,",
-						"          ceo,",
-						"          sector,",
-						"          address",
+						"          changes",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
@@ -3273,48 +3011,52 @@
 					"scriptLines": [
 						"source(output(",
 						"          symbol as string,",
-						"          price as integer,",
-						"          beta as string,",
-						"          volAvg as string,",
-						"          mktCap as string,",
-						"          lastDiv as string,",
-						"          range as string,",
-						"          changes as string,",
-						"          companyName as string,",
-						"          currency as string,",
-						"          cik as string,",
-						"          isin as string,",
-						"          cusip as string,",
+						"          name as string,",
+						"          price as double,",
+						"          changesPercentage as double,",
+						"          change as double,",
+						"          dayLow as double,",
+						"          dayHigh as double,",
+						"          yearHigh as double,",
+						"          yearLow as double,",
+						"          marketCap as long,",
+						"          priceAvg50 as double,",
+						"          priceAvg200 as double,",
 						"          exchange as string,",
-						"          exchangeShortName as string,",
-						"          industry as string,",
-						"          website as string,",
-						"          description as string,",
-						"          ceo as string,",
-						"          sector as string,",
-						"          country as string,",
-						"          fullTimeEmployees as string,",
-						"          phone as string,",
-						"          address as string,",
-						"          city as string,",
-						"          state as string,",
-						"          zip as string,",
-						"          dcfDiff as string,",
-						"          dcf as string,",
-						"          image as string,",
-						"          ipoDate as string,",
-						"          defaultImage as string,",
-						"          isEtf as string,",
-						"          isActivelyTrading as string,",
-						"          isAdr as string,",
-						"          isFund as string",
+						"          volume as integer,",
+						"          avgVolume as integer,",
+						"          open as double,",
+						"          previousClose as double,",
+						"          eps as double,",
+						"          pe as double,",
+						"          earningsAnnouncement as string,",
+						"          sharesOutstanding as long,",
+						"          timestamp as integer",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false) ~> source1",
-						"source1 select(skipDuplicateMapInputs: true,",
+						"source1 select(mapColumn(",
+						"          symbol,",
+						"          price,",
+						"          changesPercentage,",
+						"          change,",
+						"          dayLow,",
+						"          dayHigh,",
+						"          yearHigh,",
+						"          yearLow,",
+						"          marketCap,",
+						"          priceAvg50,",
+						"          priceAvg200,",
+						"          volume,",
+						"          avgVolume,",
+						"          eps,",
+						"          pe",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 filter(!isNull(symbol) && price > 0) ~> filter1",
+						"select1 filter(price > 0 && dayLow >= 0 && dayHigh >= 0 && yearLow >= 0 && yearHigh >= 0 && marketCap > 0 && !isNull(pe) && !isNull(eps)",
+						") ~> filter1",
 						"filter1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",

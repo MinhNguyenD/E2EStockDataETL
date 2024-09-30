@@ -11,10 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'HttpServer1'"
 		},
-		"RestService1_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'RestService1'"
-		},
 		"datalakestorage_link_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'datalakestorage_link'"
@@ -25,17 +21,9 @@
 		},
 		"HttpServer1_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}"
+			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}&@{linkedService().query}"
 		},
 		"HttpServer1_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "datafactadmin"
-		},
-		"RestService1_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}"
-		},
-		"RestService1_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "datafactadmin"
 		},
@@ -73,9 +61,6 @@
 					"HttpServer1_password": {
 						"value": "[parameters('HttpServer1_password')]"
 					},
-					"RestService1_password": {
-						"value": "[parameters('RestService1_password')]"
-					},
 					"datalakestorage_link_accountKey": {
 						"value": "[parameters('datalakestorage_link_accountKey')]"
 					},
@@ -87,12 +72,6 @@
 					},
 					"HttpServer1_properties_typeProperties_userName": {
 						"value": "[parameters('HttpServer1_properties_typeProperties_userName')]"
-					},
-					"RestService1_properties_typeProperties_url": {
-						"value": "[parameters('RestService1_properties_typeProperties_url')]"
-					},
-					"RestService1_properties_typeProperties_userName": {
-						"value": "[parameters('RestService1_properties_typeProperties_userName')]"
 					},
 					"datalakestorage_link_properties_typeProperties_url": {
 						"value": "[parameters('datalakestorage_link_properties_typeProperties_url')]"
