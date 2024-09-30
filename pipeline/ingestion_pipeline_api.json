@@ -566,7 +566,8 @@
 									"name": "timestamp"
 								}
 							}
-						]
+						],
+						"collectionReference": ""
 					}
 				},
 				"inputs": [
@@ -894,7 +895,8 @@
 									"name": "Net Profit Margin"
 								}
 							}
-						]
+						],
+						"collectionReference": ""
 					}
 				},
 				"inputs": [
@@ -1060,23 +1062,6 @@
 								},
 								"sink": {
 									"name": "interestDebtPerShare"
-								}
-							},
-							{
-								"source": {
-									"path": "$['marketCap']"
-								},
-								"sink": {
-									"name": "marketCap",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['enterpriseValue']"
-								},
-								"sink": {
-									"name": "enterpriseValue"
 								}
 							},
 							{
@@ -1446,9 +1431,28 @@
 								"sink": {
 									"name": "capexPerShare"
 								}
+							},
+							{
+								"source": {
+									"path": "$['marketCap']"
+								},
+								"sink": {
+									"name": "marketCap",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['enterpriseValue']"
+								},
+								"sink": {
+									"name": "enterpriseValue",
+									"type": "String"
+								}
 							}
 						],
-						"mapComplexValuesToString": false
+						"collectionReference": "",
+						"mapComplexValuesToString": true
 					}
 				},
 				"inputs": [
@@ -1561,7 +1565,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['date']"
+									"path": "['date']"
 								},
 								"sink": {
 									"name": "date"
@@ -1569,7 +1573,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['open']"
+									"path": "['open']"
 								},
 								"sink": {
 									"name": "open"
@@ -1577,7 +1581,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['high']"
+									"path": "['high']"
 								},
 								"sink": {
 									"name": "high"
@@ -1585,7 +1589,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['low']"
+									"path": "['low']"
 								},
 								"sink": {
 									"name": "low"
@@ -1593,7 +1597,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['close']"
+									"path": "['close']"
 								},
 								"sink": {
 									"name": "close"
@@ -1601,7 +1605,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['adjClose']"
+									"path": "['adjClose']"
 								},
 								"sink": {
 									"name": "adjClose"
@@ -1609,7 +1613,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['volume']"
+									"path": "['volume']"
 								},
 								"sink": {
 									"name": "volume"
@@ -1617,7 +1621,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['unadjustedVolume']"
+									"path": "['unadjustedVolume']"
 								},
 								"sink": {
 									"name": "unadjustedVolume"
@@ -1625,7 +1629,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['change']"
+									"path": "['change']"
 								},
 								"sink": {
 									"name": "change"
@@ -1633,7 +1637,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['changePercent']"
+									"path": "['changePercent']"
 								},
 								"sink": {
 									"name": "changePercent"
@@ -1641,7 +1645,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['vwap']"
+									"path": "['vwap']"
 								},
 								"sink": {
 									"name": "vwap"
@@ -1649,7 +1653,7 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['label']"
+									"path": "['label']"
 								},
 								"sink": {
 									"name": "label"
@@ -1657,13 +1661,14 @@
 							},
 							{
 								"source": {
-									"path": "$['historical'][0]['changeOverTime']"
+									"path": "['changeOverTime']"
 								},
 								"sink": {
 									"name": "changeOverTime"
 								}
 							}
-						]
+						],
+						"collectionReference": "$['historical']"
 					}
 				},
 				"inputs": [
@@ -1671,7 +1676,8 @@
 						"referenceName": "stocks_api_dataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"path": "historical-price-full/msft"
+							"path": "historical-price-full/msft",
+							"query": "from=2018-01-01"
 						}
 					}
 				],
@@ -1681,7 +1687,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"folderPath": {
-								"value": "@{pipeline().parameters.apiFolderPath}/keymetrics",
+								"value": "@{pipeline().parameters.apiFolderPath}/historicalprice",
 								"type": "Expression"
 							}
 						}
