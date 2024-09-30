@@ -641,7 +641,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['date']"
+									"path": "['date']"
 								},
 								"sink": {
 									"name": "date"
@@ -649,7 +649,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Revenue']"
+									"path": "['Revenue']"
 								},
 								"sink": {
 									"name": "Revenue"
@@ -657,7 +657,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Revenue Growth']"
+									"path": "['Revenue Growth']"
 								},
 								"sink": {
 									"name": "Revenue Growth"
@@ -665,7 +665,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Cost of Revenue']"
+									"path": "['Cost of Revenue']"
 								},
 								"sink": {
 									"name": "Cost of Revenue"
@@ -673,7 +673,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Gross Profit']"
+									"path": "['Gross Profit']"
 								},
 								"sink": {
 									"name": "Gross Profit"
@@ -681,7 +681,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['R&D Expenses']"
+									"path": "['R&D Expenses']"
 								},
 								"sink": {
 									"name": "R&D Expenses"
@@ -689,7 +689,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['SG&A Expense']"
+									"path": "['SG&A Expense']"
 								},
 								"sink": {
 									"name": "SG&A Expense"
@@ -697,7 +697,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Operating Expenses']"
+									"path": "['Operating Expenses']"
 								},
 								"sink": {
 									"name": "Operating Expenses"
@@ -705,7 +705,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Operating Income']"
+									"path": "['Operating Income']"
 								},
 								"sink": {
 									"name": "Operating Income"
@@ -713,7 +713,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Interest Expense']"
+									"path": "['Interest Expense']"
 								},
 								"sink": {
 									"name": "Interest Expense"
@@ -721,7 +721,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Earnings before Tax']"
+									"path": "['Earnings before Tax']"
 								},
 								"sink": {
 									"name": "Earnings before Tax"
@@ -729,7 +729,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Income Tax Expense']"
+									"path": "['Income Tax Expense']"
 								},
 								"sink": {
 									"name": "Income Tax Expense"
@@ -737,7 +737,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Net Income - Non-Controlling int']"
+									"path": "['Net Income - Non-Controlling int']"
 								},
 								"sink": {
 									"name": "Net Income - Non-Controlling int"
@@ -745,7 +745,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Net Income - Discontinued ops']"
+									"path": "['Net Income - Discontinued ops']"
 								},
 								"sink": {
 									"name": "Net Income - Discontinued ops"
@@ -753,7 +753,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Net Income']"
+									"path": "['Net Income']"
 								},
 								"sink": {
 									"name": "Net Income"
@@ -761,7 +761,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Preferred Dividends']"
+									"path": "['Preferred Dividends']"
 								},
 								"sink": {
 									"name": "Preferred Dividends"
@@ -769,7 +769,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Net Income Com']"
+									"path": "['Net Income Com']"
 								},
 								"sink": {
 									"name": "Net Income Com"
@@ -777,7 +777,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['EPS']"
+									"path": "['EPS']"
 								},
 								"sink": {
 									"name": "EPS"
@@ -785,7 +785,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['EPS Diluted']"
+									"path": "['EPS Diluted']"
 								},
 								"sink": {
 									"name": "EPS Diluted"
@@ -793,7 +793,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Weighted Average Shs Out']"
+									"path": "['Weighted Average Shs Out']"
 								},
 								"sink": {
 									"name": "Weighted Average Shs Out"
@@ -801,7 +801,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Weighted Average Shs Out (Dil)']"
+									"path": "['Weighted Average Shs Out (Dil)']"
 								},
 								"sink": {
 									"name": "Weighted Average Shs Out (Dil)"
@@ -809,7 +809,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Dividend per Share']"
+									"path": "['Dividend per Share']"
 								},
 								"sink": {
 									"name": "Dividend per Share"
@@ -817,7 +817,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Gross Margin']"
+									"path": "['Gross Margin']"
 								},
 								"sink": {
 									"name": "Gross Margin"
@@ -825,7 +825,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['EBITDA Margin']"
+									"path": "['EBITDA Margin']"
 								},
 								"sink": {
 									"name": "EBITDA Margin"
@@ -833,7 +833,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['EBIT Margin']"
+									"path": "['EBIT Margin']"
 								},
 								"sink": {
 									"name": "EBIT Margin"
@@ -841,7 +841,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Profit Margin']"
+									"path": "['Profit Margin']"
 								},
 								"sink": {
 									"name": "Profit Margin"
@@ -849,7 +849,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Free Cash Flow margin']"
+									"path": "['Free Cash Flow margin']"
 								},
 								"sink": {
 									"name": "Free Cash Flow margin"
@@ -857,7 +857,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['EBITDA']"
+									"path": "['EBITDA']"
 								},
 								"sink": {
 									"name": "EBITDA"
@@ -865,7 +865,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['EBIT']"
+									"path": "['EBIT']"
 								},
 								"sink": {
 									"name": "EBIT"
@@ -873,7 +873,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Consolidated Income']"
+									"path": "['Consolidated Income']"
 								},
 								"sink": {
 									"name": "Consolidated Income"
@@ -881,7 +881,7 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Earnings Before Tax Margin']"
+									"path": "['Earnings Before Tax Margin']"
 								},
 								"sink": {
 									"name": "Earnings Before Tax Margin"
@@ -889,14 +889,14 @@
 							},
 							{
 								"source": {
-									"path": "$['financials'][0]['Net Profit Margin']"
+									"path": "['Net Profit Margin']"
 								},
 								"sink": {
 									"name": "Net Profit Margin"
 								}
 							}
 						],
-						"collectionReference": ""
+						"collectionReference": "$['financials']"
 					}
 				},
 				"inputs": [
@@ -904,7 +904,8 @@
 						"referenceName": "stocks_api_dataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"path": "financials/income-statement/msft"
+							"path": "financials/income-statement/msft",
+							"query": "\"\""
 						}
 					}
 				],
@@ -1460,7 +1461,8 @@
 						"referenceName": "stocks_api_dataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"path": "key-metrics/msft"
+							"path": "key-metrics/msft",
+							"query": "\"\""
 						}
 					}
 				],
