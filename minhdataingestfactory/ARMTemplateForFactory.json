@@ -23,6 +23,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'storagesource_link'"
 		},
+		"AzureSynapseWarehouse_link_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSynapseWarehouse_link'"
+		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0930-204801-mvslvzfz"
+		},
 		"HttpServer1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}&@{linkedService().query}"
@@ -34,6 +42,18 @@
 		"datalakestorage_link_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://dataengineerlakestorage.dfs.core.windows.net/"
+		},
+		"AzureSynapseWarehouse_link_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "minh-data-engineer-synapse.sql.azuresynapse.net"
+		},
+		"AzureSynapseWarehouse_link_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "stock_warehouse"
+		},
+		"AzureSynapseWarehouse_link_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladminuser"
 		}
 	},
 	"variables": {
@@ -381,7 +401,8 @@
 								"referenceName": "stocks_api_dataset",
 								"type": "DatasetReference",
 								"parameters": {
-									"path": "/profile/msft"
+									"path": "/profile/msft",
+									"query": "\"\""
 								}
 							}
 						],
@@ -1934,6 +1955,9 @@
 						"defaultValue": "api"
 					}
 				},
+				"folder": {
+					"name": "ingestion"
+				},
 				"annotations": [],
 				"lastPublishTime": "2024-09-28T03:58:16Z"
 			},
@@ -2238,6 +2262,9 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"folder": {
+					"name": "ingestion"
+				},
 				"annotations": [],
 				"lastPublishTime": "2024-09-28T03:50:48Z"
 			},
@@ -2247,13 +2274,91 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/transformation_pipeline_profit_growth')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Profit Growth ETL",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/mn549239@dal.ca/profit_growth_analysis"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "transformation"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/transformation_pipeline_valuation_over_time')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Valuation Over Time ETL",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/mn549239@dal.ca/valuation_over_time_analysis"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "transformation"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/transformation_pipeline_voltality_risk')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Notebook1",
+						"name": "Voltality Risk ETL",
 						"type": "DatabricksNotebook",
 						"dependsOn": [],
 						"policy": {
@@ -2276,47 +2381,13 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"folder": {
+					"name": "transformation"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/processed_datalake_dataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "datalakestorage_link",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"folderPath": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"folderPath": {
-							"value": "@dataset().folderPath",
-							"type": "Expression"
-						},
-						"fileSystem": "processed"
-					},
-					"columnDelimiter": ",",
-					"encodingName": "UTF-8",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/datalakestorage_link')]"
 			]
 		},
 		{
@@ -2508,11 +2579,7 @@
 						"type": "SecureString",
 						"value": "[parameters('AzureDatabricks1_accessToken')]"
 					},
-					"newClusterNodeType": "Standard_DS3_v2",
-					"newClusterNumOfWorker": "1",
-					"newClusterVersion": "10.4.x-scala2.12",
-					"clusterOption": "Fixed",
-					"newClusterInitScripts": []
+					"existingClusterId": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
 				}
 			},
 			"dependsOn": []
@@ -3132,6 +3199,607 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/raw_datalake_dataset')]",
 				"[concat(variables('factoryId'), '/datasets/stage_datalake_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/load_pipeline_warehouse')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load Valuation Over Time",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*.parquet",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"allowCopyCommand": true,
+								"copyCommandSettings": {}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "processed_datalake_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"folderPath": "api/valuation_analysis"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "synapse_warehouse_valuation_comparision_dataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Load Profit Growth",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*.parquet",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"allowCopyCommand": true,
+								"copyCommandSettings": {}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "processed_datalake_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"folderPath": "api/profit_growth_analysis"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "synapse_warehouse_profit_growth_dataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Load Voltality Risk",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*.parquet",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"allowCopyCommand": true,
+								"copyCommandSettings": {}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "processed_datalake_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"folderPath": "api/voltality_risk_analysis"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "synapse_warehouse_voltality_risk_dataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"apiFolderPath": {
+						"type": "string",
+						"defaultValue": "api"
+					}
+				},
+				"folder": {
+					"name": "load"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/processed_datalake_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/synapse_warehouse_valuation_comparision_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/synapse_warehouse_profit_growth_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/synapse_warehouse_voltality_risk_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseWarehouse_link')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"server": "[parameters('AzureSynapseWarehouse_link_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSynapseWarehouse_link_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSynapseWarehouse_link_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSynapseWarehouse_link_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/synapse_warehouse_valuation_comparision_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseWarehouse_link",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "year",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "avg_peRatio",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "avg_priceToSalesRatio",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "avg_pbRatio",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "avg_marketCap",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "avg_enterpriseValue",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "pe_change",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "priceToSales_change",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "marketCap_change",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "valuation_comparison"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseWarehouse_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/processed_datalake_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "datalakestorage_link",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folderPath": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().folderPath",
+							"type": "Expression"
+						},
+						"fileSystem": "processed"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "year",
+						"type": "INT_32"
+					},
+					{
+						"name": "Avg Revenue Growth",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "Avg Net Income Growth",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "Avg Gross Margin",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "Avg Operating Margin",
+						"type": "DOUBLE"
+					},
+					{
+						"name": "Avg Net Profit Margin",
+						"type": "DOUBLE"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/datalakestorage_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/synapse_warehouse_profit_growth_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseWarehouse_link",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "year",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Avg_Revenue_Growth",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Avg_Net_Income_Growth",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Avg_Gross_Margin",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Avg_Operating_Margin",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "Avg_Net_Profit_Margin",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "ProfitabilityGrowthAnalysis"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseWarehouse_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/synapse_warehouse_voltality_risk_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseWarehouse_link",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "symbol",
+						"type": "nvarchar"
+					},
+					{
+						"name": "volatility",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "avg_marketCap",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "avg_pe",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "VaR",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "VolatilityRiskAnalysis"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseWarehouse_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/main_pipeline_etl_stock_analysis')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ingestion_api",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ingestion_pipeline_api",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ingestion_storage",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ingestion_pipeline_storage",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "transformation_profit_growth",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ingestion_api",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "ingestion_storage",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "transformation_pipeline_profit_growth",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "transformation_valuation_comparision",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ingestion_api",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "ingestion_storage",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "transformation_pipeline_valuation_over_time",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "transformation_voltality_risk",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ingestion_api",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "ingestion_storage",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "transformation_pipeline_voltality_risk",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "load_warehouse_synapse",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "transformation_profit_growth",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "transformation_voltality_risk",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "transformation_valuation_comparision",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "load_pipeline_warehouse",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/ingestion_pipeline_api')]",
+				"[concat(variables('factoryId'), '/pipelines/ingestion_pipeline_storage')]",
+				"[concat(variables('factoryId'), '/pipelines/transformation_pipeline_profit_growth')]",
+				"[concat(variables('factoryId'), '/pipelines/transformation_pipeline_valuation_over_time')]",
+				"[concat(variables('factoryId'), '/pipelines/transformation_pipeline_voltality_risk')]",
+				"[concat(variables('factoryId'), '/pipelines/load_pipeline_warehouse')]"
 			]
 		}
 	]
