@@ -13,6 +13,141 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/keymetrics_cleansing_ingestion_dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "raw_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "stage_datalake_dataset",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          symbol as string,",
+						"          date as date,",
+						"          calendarYear as short,",
+						"          period as string,",
+						"          revenuePerShare as double,",
+						"          netIncomePerShare as double,",
+						"          operatingCashFlowPerShare as double,",
+						"          freeCashFlowPerShare as double,",
+						"          cashPerShare as double,",
+						"          bookValuePerShare as double,",
+						"          tangibleBookValuePerShare as double,",
+						"          shareholdersEquityPerShare as double,",
+						"          interestDebtPerShare as double,",
+						"          peRatio as double,",
+						"          priceToSalesRatio as double,",
+						"          pocfratio as double,",
+						"          pfcfRatio as double,",
+						"          pbRatio as double,",
+						"          ptbRatio as double,",
+						"          evToSales as double,",
+						"          enterpriseValueOverEBITDA as double,",
+						"          evToOperatingCashFlow as double,",
+						"          evToFreeCashFlow as double,",
+						"          earningsYield as double,",
+						"          freeCashFlowYield as double,",
+						"          debtToEquity as double,",
+						"          debtToAssets as double,",
+						"          netDebtToEBITDA as double,",
+						"          currentRatio as double,",
+						"          interestCoverage as double,",
+						"          incomeQuality as double,",
+						"          dividendYield as double,",
+						"          payoutRatio as double,",
+						"          salesGeneralAndAdministrativeToRevenue as double,",
+						"          researchAndDdevelopementToRevenue as double,",
+						"          intangiblesToTotalAssets as double,",
+						"          capexToOperatingCashFlow as double,",
+						"          capexToRevenue as double,",
+						"          capexToDepreciation as double,",
+						"          stockBasedCompensationToRevenue as double,",
+						"          grahamNumber as double,",
+						"          roic as double,",
+						"          returnOnTangibleAssets as double,",
+						"          grahamNetNet as double,",
+						"          workingCapital as long,",
+						"          tangibleAssetValue as long,",
+						"          netCurrentAssetValue as long,",
+						"          investedCapital as long,",
+						"          averageReceivables as long,",
+						"          averagePayables as long,",
+						"          averageInventory as long,",
+						"          daysSalesOutstanding as double,",
+						"          daysPayablesOutstanding as double,",
+						"          daysOfInventoryOnHand as double,",
+						"          receivablesTurnover as double,",
+						"          payablesTurnover as double,",
+						"          inventoryTurnover as double,",
+						"          roe as double,",
+						"          capexPerShare as double,",
+						"          marketCap as double,",
+						"          enterpriseValue as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 select(mapColumn(",
+						"          symbol,",
+						"          date,",
+						"          revenuePerShare,",
+						"          netIncomePerShare,",
+						"          operatingCashFlowPerShare,",
+						"          freeCashFlowPerShare,",
+						"          cashPerShare,",
+						"          peRatio,",
+						"          priceToSalesRatio,",
+						"          pbRatio,",
+						"          debtToEquity,",
+						"          currentRatio,",
+						"          interestCoverage,",
+						"          roe,",
+						"          marketCap,",
+						"          enterpriseValue,",
+						"          bookValuePerShare,",
+						"          roic",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 filter(!isNull(peRatio) && !isNull(netIncomePerShare) && !isNull(operatingCashFlowPerShare) && !isNull(revenuePerShare) && !isNull(freeCashFlowPerShare) && debtToEquity >= 0 && interestCoverage >= 0) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/profile_cleansing_ingestion_dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -201,176 +336,6 @@
 						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/load_pipeline_warehouse')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Load Valuation Over Time",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFileName": "*.parquet",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "ParquetReadSettings"
-								}
-							},
-							"sink": {
-								"type": "SqlDWSink",
-								"allowCopyCommand": true,
-								"copyCommandSettings": {}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "processed_datalake_dataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"folderPath": "api/valuation_analysis"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "synapse_warehouse_valuation_comparision_dataset",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Load Profit Growth",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFileName": "*.parquet",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "ParquetReadSettings"
-								}
-							},
-							"sink": {
-								"type": "SqlDWSink",
-								"allowCopyCommand": true,
-								"copyCommandSettings": {}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "processed_datalake_dataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"folderPath": "api/profit_growth_analysis"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "synapse_warehouse_profit_growth_dataset",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Load Voltality Risk",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ParquetSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"wildcardFileName": "*.parquet",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "ParquetReadSettings"
-								}
-							},
-							"sink": {
-								"type": "SqlDWSink",
-								"allowCopyCommand": true,
-								"copyCommandSettings": {}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "processed_datalake_dataset",
-								"type": "DatasetReference",
-								"parameters": {
-									"folderPath": "api/voltality_risk_analysis"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "synapse_warehouse_voltality_risk_dataset",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"apiFolderPath": {
-						"type": "string",
-						"defaultValue": "api"
-					}
-				},
-				"folder": {
-					"name": "load"
-				},
-				"annotations": []
 			},
 			"dependsOn": []
 		},
@@ -2277,7 +2242,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/profile_cleansing_ingestion_dataflow')]",
-				"[concat(variables('factoryId'), '/dataflows/quote_cleansing_ingestion_dataflow')]"
+				"[concat(variables('factoryId'), '/dataflows/quote_cleansing_ingestion_dataflow')]",
+				"[concat(variables('factoryId'), '/dataflows/keymetrics_cleansing_ingestion_dataflow')]"
 			]
 		},
 		{
@@ -2482,8 +2448,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/ingestion_pipeline_api')]",
-				"[concat(variables('factoryId'), '/pipelines/load_pipeline_warehouse')]"
+				"[concat(variables('factoryId'), '/pipelines/ingestion_pipeline_api')]"
 			]
 		}
 	]

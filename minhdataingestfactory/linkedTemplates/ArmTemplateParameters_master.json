@@ -8,6 +8,9 @@
 		"AzureDatabricks1_accessToken": {
 			"value": ""
 		},
+		"AzureSynapseWarehouse_link_password": {
+			"value": ""
+		},
 		"HttpServer1_password": {
 			"value": ""
 		},
@@ -17,20 +20,8 @@
 		"storagesource_link_connectionString": {
 			"value": ""
 		},
-		"AzureSynapseWarehouse_link_password": {
-			"value": ""
-		},
 		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
 			"value": "0930-204801-mvslvzfz"
-		},
-		"HttpServer1_properties_typeProperties_url": {
-			"value": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}&@{linkedService().query}"
-		},
-		"HttpServer1_properties_typeProperties_userName": {
-			"value": "datafactadmin"
-		},
-		"datalakestorage_link_properties_typeProperties_url": {
-			"value": "https://dataengineerlakestorage.dfs.core.windows.net/"
 		},
 		"AzureSynapseWarehouse_link_properties_typeProperties_server": {
 			"value": "minh-data-engineer-synapse.sql.azuresynapse.net"
@@ -40,6 +31,15 @@
 		},
 		"AzureSynapseWarehouse_link_properties_typeProperties_userName": {
 			"value": "sqladminuser"
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"value": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}&@{linkedService().query}"
+		},
+		"HttpServer1_properties_typeProperties_userName": {
+			"value": "datafactadmin"
+		},
+		"datalakestorage_link_properties_typeProperties_url": {
+			"value": "https://dataengineerlakestorage.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""

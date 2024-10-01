@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
 		},
+		"AzureSynapseWarehouse_link_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSynapseWarehouse_link'"
+		},
 		"HttpServer1_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'HttpServer1'"
@@ -23,25 +27,9 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'storagesource_link'"
 		},
-		"AzureSynapseWarehouse_link_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'AzureSynapseWarehouse_link'"
-		},
 		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "0930-204801-mvslvzfz"
-		},
-		"HttpServer1_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}&@{linkedService().query}"
-		},
-		"HttpServer1_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "datafactadmin"
-		},
-		"datalakestorage_link_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://dataengineerlakestorage.dfs.core.windows.net/"
 		},
 		"AzureSynapseWarehouse_link_properties_typeProperties_server": {
 			"type": "string",
@@ -54,6 +42,18 @@
 		"AzureSynapseWarehouse_link_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "sqladminuser"
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://financialmodelingprep.com/api/v3/@{linkedService().path}?apikey=@{linkedService().apiKey}&@{linkedService().query}"
+		},
+		"HttpServer1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "datafactadmin"
+		},
+		"datalakestorage_link_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dataengineerlakestorage.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -85,6 +85,9 @@
 					"AzureDatabricks1_accessToken": {
 						"value": "[parameters('AzureDatabricks1_accessToken')]"
 					},
+					"AzureSynapseWarehouse_link_password": {
+						"value": "[parameters('AzureSynapseWarehouse_link_password')]"
+					},
 					"HttpServer1_password": {
 						"value": "[parameters('HttpServer1_password')]"
 					},
@@ -94,20 +97,8 @@
 					"storagesource_link_connectionString": {
 						"value": "[parameters('storagesource_link_connectionString')]"
 					},
-					"AzureSynapseWarehouse_link_password": {
-						"value": "[parameters('AzureSynapseWarehouse_link_password')]"
-					},
 					"AzureDatabricks1_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
-					},
-					"HttpServer1_properties_typeProperties_url": {
-						"value": "[parameters('HttpServer1_properties_typeProperties_url')]"
-					},
-					"HttpServer1_properties_typeProperties_userName": {
-						"value": "[parameters('HttpServer1_properties_typeProperties_userName')]"
-					},
-					"datalakestorage_link_properties_typeProperties_url": {
-						"value": "[parameters('datalakestorage_link_properties_typeProperties_url')]"
 					},
 					"AzureSynapseWarehouse_link_properties_typeProperties_server": {
 						"value": "[parameters('AzureSynapseWarehouse_link_properties_typeProperties_server')]"
@@ -117,6 +108,15 @@
 					},
 					"AzureSynapseWarehouse_link_properties_typeProperties_userName": {
 						"value": "[parameters('AzureSynapseWarehouse_link_properties_typeProperties_userName')]"
+					},
+					"HttpServer1_properties_typeProperties_url": {
+						"value": "[parameters('HttpServer1_properties_typeProperties_url')]"
+					},
+					"HttpServer1_properties_typeProperties_userName": {
+						"value": "[parameters('HttpServer1_properties_typeProperties_userName')]"
+					},
+					"datalakestorage_link_properties_typeProperties_url": {
+						"value": "[parameters('datalakestorage_link_properties_typeProperties_url')]"
 					}
 				}
 			},
