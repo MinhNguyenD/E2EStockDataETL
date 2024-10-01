@@ -1,0 +1,158 @@
+{
+	"name": "load_pipeline_warehouse",
+	"properties": {
+		"activities": [
+			{
+				"name": "Load Valuation Over Time",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.parquet",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"allowCopyCommand": true
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "processed_datalake_dataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"folderPath": "api/valuation_analysis"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "synapse_warehouse_valuation_comparision_dataset",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Load Profit Growth",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.parquet",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"allowCopyCommand": true
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "processed_datalake_dataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"folderPath": "api/profit_growth_analysis"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "synapse_warehouse_profit_growth_dataset",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Load Voltality Risk",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.parquet",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"allowCopyCommand": true
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "processed_datalake_dataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"folderPath": "api/voltality_risk_analysis"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "synapse_warehouse_voltality_risk_dataset",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"apiFolderPath": {
+				"type": "string",
+				"defaultValue": "api"
+			}
+		},
+		"folder": {
+			"name": "load"
+		},
+		"annotations": []
+	}
+}

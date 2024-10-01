@@ -1,0 +1,53 @@
+{
+	"name": "processed_datalake_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "datalakestorage_link",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"folderPath": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().folderPath",
+					"type": "Expression"
+				},
+				"fileSystem": "processed"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "year",
+				"type": "INT_32"
+			},
+			{
+				"name": "Avg Revenue Growth",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Avg Net Income Growth",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Avg Gross Margin",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Avg Operating Margin",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Avg Net Profit Margin",
+				"type": "DOUBLE"
+			}
+		]
+	}
+}
