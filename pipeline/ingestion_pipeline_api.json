@@ -337,7 +337,8 @@
 						"referenceName": "stocks_api_dataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"path": "/profile/msft"
+							"path": "/profile/msft",
+							"query": "\"\""
 						}
 					}
 				],
