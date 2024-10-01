@@ -1560,14 +1560,6 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['symbol']"
-								},
-								"sink": {
-									"name": "symbol"
-								}
-							},
-							{
-								"source": {
 									"path": "['date']"
 								},
 								"sink": {
@@ -1635,7 +1627,8 @@
 									"path": "['change']"
 								},
 								"sink": {
-									"name": "change"
+									"name": "change",
+									"type": "Double"
 								}
 							},
 							{
@@ -1668,6 +1661,14 @@
 								},
 								"sink": {
 									"name": "changeOverTime"
+								}
+							},
+							{
+								"source": {
+									"path": "$['symbol']"
+								},
+								"sink": {
+									"name": "symbol"
 								}
 							}
 						],
