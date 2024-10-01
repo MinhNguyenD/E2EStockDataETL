@@ -1,0 +1,62 @@
+{
+	"name": "synapse_warehouse_valuation_comparision_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSynapseWarehouse_link",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "avg_peRatio",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "avg_priceToSalesRatio",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "avg_pbRatio",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "avg_marketCap",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "avg_enterpriseValue",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "pe_change",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "priceToSales_change",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "marketCap_change",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "valuation_comparison"
+		}
+	}
+}

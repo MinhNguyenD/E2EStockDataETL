@@ -1,0 +1,47 @@
+{
+	"name": "synapse_warehouse_profit_growth_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSynapseWarehouse_link",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Avg_Revenue_Growth",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Avg_Net_Income_Growth",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Avg_Gross_Margin",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Avg_Operating_Margin",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Avg_Net_Profit_Margin",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ProfitabilityGrowthAnalysis"
+		}
+	}
+}

@@ -1,0 +1,162 @@
+{
+	"name": "main_pipeline_etl_stock_analysis",
+	"properties": {
+		"activities": [
+			{
+				"name": "ingestion_api",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ingestion_pipeline_api",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ingestion_storage",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ingestion_pipeline_storage",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "transformation_profit_growth",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ingestion_api",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "ingestion_storage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "transformation_pipeline_profit_growth",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "transformation_valuation_comparision",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ingestion_api",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "ingestion_storage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "transformation_pipeline_valuation_over_time",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "transformation_voltality_risk",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ingestion_api",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "ingestion_storage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "transformation_pipeline_voltality_risk",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "load_warehouse_synapse",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "transformation_profit_growth",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "transformation_voltality_risk",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "transformation_valuation_comparision",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "load_pipeline_warehouse",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}

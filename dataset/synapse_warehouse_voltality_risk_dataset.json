@@ -1,0 +1,41 @@
+{
+	"name": "synapse_warehouse_voltality_risk_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSynapseWarehouse_link",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "symbol",
+				"type": "nvarchar"
+			},
+			{
+				"name": "volatility",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "avg_marketCap",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "avg_pe",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "VaR",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "VolatilityRiskAnalysis"
+		}
+	}
+}

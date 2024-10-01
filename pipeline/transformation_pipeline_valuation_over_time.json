@@ -1,0 +1,31 @@
+{
+	"name": "transformation_pipeline_valuation_over_time",
+	"properties": {
+		"activities": [
+			{
+				"name": "Valuation Over Time ETL",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/mn549239@dal.ca/valuation_over_time_analysis"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "transformation"
+		},
+		"annotations": []
+	}
+}

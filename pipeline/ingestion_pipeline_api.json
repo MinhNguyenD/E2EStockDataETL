@@ -337,7 +337,8 @@
 						"referenceName": "stocks_api_dataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"path": "/profile/msft"
+							"path": "/profile/msft",
+							"query": "\"\""
 						}
 					}
 				],
@@ -1559,14 +1560,6 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['symbol']"
-								},
-								"sink": {
-									"name": "symbol"
-								}
-							},
-							{
-								"source": {
 									"path": "['date']"
 								},
 								"sink": {
@@ -1634,7 +1627,8 @@
 									"path": "['change']"
 								},
 								"sink": {
-									"name": "change"
+									"name": "change",
+									"type": "Double"
 								}
 							},
 							{
@@ -1667,6 +1661,14 @@
 								},
 								"sink": {
 									"name": "changeOverTime"
+								}
+							},
+							{
+								"source": {
+									"path": "$['symbol']"
+								},
+								"sink": {
+									"name": "symbol"
 								}
 							}
 						],
@@ -1876,6 +1878,9 @@
 				"type": "string",
 				"defaultValue": "api"
 			}
+		},
+		"folder": {
+			"name": "ingestion"
 		},
 		"annotations": [],
 		"lastPublishTime": "2024-09-28T03:58:16Z"

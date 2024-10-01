@@ -11,7 +11,7 @@
 			}
 		},
 		"annotations": [],
-		"type": "DelimitedText",
+		"type": "Parquet",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
@@ -21,13 +21,33 @@
 				},
 				"fileSystem": "processed"
 			},
-			"columnDelimiter": ",",
-			"encodingName": "UTF-8",
-			"escapeChar": "\\",
-			"firstRowAsHeader": true,
-			"quoteChar": "\""
+			"compressionCodec": "snappy"
 		},
-		"schema": []
-	},
-	"type": "Microsoft.DataFactory/factories/datasets"
+		"schema": [
+			{
+				"name": "year",
+				"type": "INT_32"
+			},
+			{
+				"name": "Avg Revenue Growth",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Avg Net Income Growth",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Avg Gross Margin",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Avg Operating Margin",
+				"type": "DOUBLE"
+			},
+			{
+				"name": "Avg Net Profit Margin",
+				"type": "DOUBLE"
+			}
+		]
+	}
 }
